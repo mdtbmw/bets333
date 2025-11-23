@@ -1,76 +1,53 @@
 {
-  "placeholderImages": [
+  "categories": [
     {
       "id": "1",
-      "description": "Bitcoin currency symbol",
-      "imageUrl": "https://images.unsplash.com/photo-1584232992172-29cead8e5230?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxiaXRjb2luJTIwY3J5cHRvfGVufDB8fHx8MTc2Mzg2NTA1OXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "bitcoin crypto"
+      "name": "Crypto",
+      "icon": "Bitcoin",
+      "image": "https://images.unsplash.com/photo-1621419708123-436417e76a7e?q=80&w=1920&auto=format&fit=crop",
+      "aiHint": "crypto currency"
     },
     {
       "id": "2",
-      "description": "The White House in Washington D.C.",
-      "imageUrl": "https://images.unsplash.com/photo-1557160854-e1e89fdd3286?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx3aGl0ZSUyMGhvdXNlfGVufDB8fHx8MTc2MzkxOTU0OXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "white house"
+      "name": "Sports",
+      "icon": "Trophy",
+      "image": "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?q=80&w=1920&auto=format&fit=crop",
+      "aiHint": "sports stadium"
     },
     {
       "id": "3",
-      "description": "A large concert with stage lights",
-      "imageUrl": "https://images.unsplash.com/photo-1666289186874-0d023fe7d002?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjb25jZXJ0JTIwbXVzaWN8ZW58MHx8fHwxNzYzOTE5NTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "concert music"
+      "name": "Politics",
+      "icon": "Landmark",
+      "image": "https://images.unsplash.com/photo-1591552550182-31e050309990?q=80&w=1920&auto=format&fit=crop",
+      "aiHint": "government building"
     },
     {
       "id": "4",
-      "description": "A soccer stadium at night",
-      "imageUrl": "https://images.unsplash.com/photo-1430232324554-8f4aebd06683?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxzb2NjZXIlMjBzdGFkaXVtfGVufDB8fHx8MTc2Mzg4ODM2OXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "soccer stadium"
+      "name": "eSports",
+      "icon": "Gamepad2",
+      "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1920&auto=format&fit=crop",
+      "aiHint": "esports arena"
     },
     {
       "id": "5",
-      "description": "An abstract representation of a robot or AI",
-      "imageUrl": "https://images.unsplash.com/photo-1656669275137-1e402e044e52?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMHJvYm90fGVufDB8fHx8MTc2Mzg1NjI2M3ww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "abstract robot"
+      "name": "Science",
+      "icon": "FlaskConical",
+      "image": "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?q=80&w=1920&auto=format&fit=crop",
+      "aiHint": "science laboratory"
     },
     {
-      "id": "user-avatar",
-      "description": "Avatar for a user",
-      "imageUrl": "https://images.unsplash.com/photo-1540569014015-19a7be504e3a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjM4NDAwOTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "person portrait"
+      "id": "6",
+      "name": "Entertainment",
+      "icon": "Film",
+      "image": "https://images.unsplash.com/photo-1514336927336-74b8b6932d25?q=80&w=1920&auto=format&fit=crop",
+      "aiHint": "movie premiere"
     },
     {
-      "id": "user1",
-      "description": "Avatar for user CryptoKing",
-      "imageUrl": "https://images.unsplash.com/photo-1600180758890-6b94519a8ba6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjM4NDAwOTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "person portrait"
-    },
-    {
-      "id": "user2",
-      "description": "Avatar for user OracleJane",
-      "imageUrl": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjM4NDAwOTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "person portrait"
-    },
-    {
-      "id": "user4",
-      "description": "Avatar for user PoliticoPro",
-      "imageUrl": "https://images.unsplash.com/photo-1531123414780-f74242c2b052?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cGVyc29uJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzYzODQwMDk2fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "person portrait"
-    },
-    {
-      "id": "user5",
-      "description": "Avatar for user SportsSensei",
-      "imageUrl": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjM4NDAwOTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "person portrait"
-    },
-    {
-      "id": "user6",
-      "description": "Avatar for user FutureSight",
-      "imageUrl": "https://images.unsplash.com/photo-1540569014015-19a7be504e3a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjM4NDAwOTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "person portrait"
-    },
-    {
-      "id": "user7",
-      "description": "Avatar for user MarketMage",
-      "imageUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjM4NDAwOTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "person portrait"
+      "id": "7",
+      "name": "World Events",
+      "icon": "Globe",
+      "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop",
+      "aiHint": "global event"
     }
   ]
 }
