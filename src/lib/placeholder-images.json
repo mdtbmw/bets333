@@ -1,3 +1,76 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "1",
+      "description": "Bitcoin currency symbol",
+      "imageUrl": "https://images.unsplash.com/photo-1584232992172-29cead8e5230?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxiaXRjb2luJTIwY3J5cHRvfGVufDB8fHx8MTc2Mzg2NTA1OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "bitcoin crypto"
+    },
+    {
+      "id": "2",
+      "description": "The White House in Washington D.C.",
+      "imageUrl": "https://images.unsplash.com/photo-1557160854-e1e89fdd3286?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx3aGl0ZSUyMGhvdXNlfGVufDB8fHx8MTc2MzkxOTU0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "white house"
+    },
+    {
+      "id": "3",
+      "description": "A large concert with stage lights",
+      "imageUrl": "https://images.unsplash.com/photo-1666289186874-0d023fe7d002?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjb25jZXJ0JTIwbXVzaWN8ZW58MHx8fHwxNzYzOTE5NTQ4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "concert music"
+    },
+    {
+      "id": "4",
+      "description": "A soccer stadium at night",
+      "imageUrl": "https://images.unsplash.com/photo-1430232324554-8f4aebd06683?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxzb2NjZXIlMjBzdGFkaXVtfGVufDB8fHx8MTc2Mzg4ODM2OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "soccer stadium"
+    },
+    {
+      "id": "5",
+      "description": "An abstract representation of a robot or AI",
+      "imageUrl": "https://images.unsplash.com/photo-1656669275137-1e402e044e52?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMHJvYm90fGVufDB8fHx8MTc2Mzg1NjI2M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract robot"
+    },
+    {
+      "id": "user-avatar",
+      "description": "Avatar for a user",
+      "imageUrl": "https://images.unsplash.com/photo-1540569014015-19a7be504e3a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjM4NDAwOTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "user1",
+      "description": "Avatar for user CryptoKing",
+      "imageUrl": "https://images.unsplash.com/photo-1600180758890-6b94519a8ba6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjM4NDAwOTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "user2",
+      "description": "Avatar for user OracleJane",
+      "imageUrl": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjM4NDAwOTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "user4",
+      "description": "Avatar for user PoliticoPro",
+      "imageUrl": "https://images.unsplash.com/photo-1531123414780-f74242c2b052?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8cGVyc29uJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzYzODQwMDk2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "user5",
+      "description": "Avatar for user SportsSensei",
+      "imageUrl": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjM4NDAwOTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "user6",
+      "description": "Avatar for user FutureSight",
+      "imageUrl": "https://images.unsplash.com/photo-1540569014015-19a7be504e3a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjM4NDAwOTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "user7",
+      "description": "Avatar for user MarketMage",
+      "imageUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjM4NDAwOTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    }
+  ]
 }
