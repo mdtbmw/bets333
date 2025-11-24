@@ -51,7 +51,8 @@ class IntuitionService {
       try {
         this.bettingContractAddress = getAddress(bettingAddressRaw);
       } catch {
-        console.error(`FATAL_ERROR: The provided NEXT_PUBLIC_INTUITION_BETTING_ADDRESS "${bettingAddressRaw}" is not a valid Ethereum address.`);
+        console.warn(`WARN: The provided NEXT_PUBLIC_INTUITION_BETTING_ADDRESS "${bettingAddressRaw}" is not a valid Ethereum address. Using placeholder.`);
+        this.bettingContractAddress = '0x0000000000000000000000000000000000000000';
       }
     }
 
@@ -59,13 +60,14 @@ class IntuitionService {
       try {
         this.profileContractAddress = getAddress(profileAddressRaw);
       } catch {
-        console.error(`FATAL_ERROR: The provided NEXT_PUBLIC_USER_PROFILE_REGISTRY_ADDRESS "${profileAddressRaw}" is not a valid Ethereum address.`);
+         console.warn(`WARN: The provided NEXT_PUBLIC_USER_PROFILE_REGISTRY_ADDRESS "${profileAddressRaw}" is not a valid Ethereum address. Using placeholder.`);
+         this.profileContractAddress = '0x0000000000000000000000000000000000000000';
       }
     }
   }
 
   private getBettingContractAddress(): Address {
-    if (!this.bettingContractAddress) {
+    if (!this.bettingContractAddress || this.bettingContractAddress === '0x0000000000000000000000000000000000000000') {
         console.warn("Warning: NEXT_PUBLIC_INTUITION_BETTING_ADDRESS is not configured. Event-related features will be disabled until a valid address is provided after deployment.");
         return '0x0000000000000000000000000000000000000000';
     }
@@ -73,12 +75,9 @@ class IntuitionService {
   }
 
   private getProfileContractAddress(): Address {
-    if (!this.profileContractAddress) {
+    if (!this.profileContractAddress || this.profileContractAddress === '0x0000000000000000000000000000000000000000') {
         console.warn("Warning: NEXT_PUBLIC_USER_PROFILE_REGISTRY_ADDRESS is not configured. Profile features will be disabled until a valid address is provided after deployment.");
         return '0x0000000000000000000000000000000000000000';
-    }
-    if (this.profileContractAddress === '0x0000000000000000000000000000000000000000') {
-      console.warn("Warning: Using placeholder address for UserProfileRegistry. Profile functions will fail until a valid address is provided after deployment.");
     }
     return this.profileContractAddress;
   }
@@ -468,7 +467,7 @@ class IntuitionService {
         args: [eventId, outcome],
       });
       return walletClient.writeContract(request);
-    } catch (err) {
+    } catch (err)_ {
       this.handleContractError(err, 'declare result');
     }
   }
@@ -565,3 +564,5 @@ class IntuitionService {
 }
 
 export const blockchainService = new IntuitionService();
+
+    
