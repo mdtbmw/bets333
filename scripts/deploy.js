@@ -44,10 +44,11 @@ async function main() {
   console.log(`\n====================================================================`);
   console.log(`   🎉  All Contracts Deployed Successfully! 🎉`);
   console.log(`====================================================================\n`);
-  console.log("ACTION REQUIRED: Copy these lines into your .env file:\n");
-  // The final lines of output MUST be the addresses for scripts to capture them.
+  console.log("🛑 ACTION REQUIRED: Copy these lines into your .env file:\n");
+  console.log("# Intuition BETs Deployed Contract Addresses");
   console.log(`NEXT_PUBLIC_INTUITION_BETTING_ADDRESS=${bettingContractAddress}`);
   console.log(`NEXT_PUBLIC_USER_PROFILE_REGISTRY_ADDRESS=${profileContractAddress}`);
+  console.log("\n====================================================================");
 }
 
 main().catch((error) => {
