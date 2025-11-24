@@ -1,5 +1,5 @@
 
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import '@/app/globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/theme-provider';
@@ -20,12 +20,13 @@ const jetbrainsMono = JetBrainsMono({ subsets: ['latin'], variable: '--font-jetb
 export const metadata: Metadata = {
   title: 'Intuition BETs — The Signal in the Noise',
   description: 'A premium prediction arena. High stakes, pure signal, verified outcomes.',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
