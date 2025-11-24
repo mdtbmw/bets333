@@ -2,4 +2,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { IntuitionBettingOracle } from "./IntuitionBettingOracle";
-export type { IntuitionVault } from "./IntuitionVault";
+export type { UserProfileRegistry } from "./UserProfileRegistry";
+
+    
