@@ -73,7 +73,8 @@ class IntuitionService {
 
   private getProfileContractAddress(): Address {
     if (!this.profileContractAddress) {
-        throw new Error("User Profile contract address is not configured. Please check your environment variables.");
+        console.warn("Warning: NEXT_PUBLIC_USER_PROFILE_REGISTRY_ADDRESS is not configured. Profile features will be disabled. Please run the deployment script and update your .env file.");
+        return '0x0000000000000000000000000000000000000000';
     }
     if (this.profileContractAddress === '0x0000000000000000000000000000000000000000') {
       console.warn("Warning: Using placeholder address for UserProfileRegistry. Profile functions will fail until a valid address is provided after deployment.");
@@ -556,3 +557,5 @@ class IntuitionService {
 }
 
 export const blockchainService = new IntuitionService();
+
+    
