@@ -12,6 +12,8 @@ import { Provider as JotaiProvider } from 'jotai';
 import { NotificationsProvider } from '@/lib/state/notifications';
 import { ProfileProvider } from '@/lib/state/profile';
 import { HeaderStateProvider } from '@/lib/state/header';
+import { WagmiProvider } from 'wagmi';
+import { config } from '@/lib/wagmi';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const spaceGrotesk = SpaceGrotesk({ subsets: ['latin'], variable: '--font-space-grotesk' });
@@ -44,14 +46,14 @@ export default function RootLayout({
       <body className={cn("h-[100dvh] overflow-y-auto bg-background font-sans", inter.variable, spaceGrotesk.variable, jetbrainsMono.variable)} suppressHydrationWarning>
         <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.04] bg-noise"></div>
         
-        <JotaiProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem={false}
-            disableTransitionOnChange
-          >
-            <Web3Provider>
+        <WagmiProvider config={config}>
+          <JotaiProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="dark"
+              enableSystem={false}
+              disableTransitionOnChange
+            >
               <ProfileProvider>
                 <NotificationsProvider>
                   <HeaderStateProvider>
@@ -61,10 +63,10 @@ export default function RootLayout({
                   </HeaderStateProvider>
                 </NotificationsProvider>
               </ProfileProvider>
-            </Web3Provider>
-            <Toaster />
-          </ThemeProvider>
-        </JotaiProvider>
+              <Toaster />
+            </ThemeProvider>
+          </JotaiProvider>
+        </WagmiProvider>
       </body>
     </html>
   );
