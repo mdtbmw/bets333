@@ -11,12 +11,12 @@ import type { Event, Bet, PnLBet } from '@/lib/types';
 import { Skeleton } from '../ui/skeleton';
 import { format } from 'date-fns';
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload, label, currencySymbol }: any) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-background/80 backdrop-blur-sm p-4 rounded-xl border border-border shadow-lg">
         <p className="label font-bold">{`${label}`}</p>
-        <p className="intro text-primary">{`PnL : ${payload[0].value.toFixed(2)}`}</p>
+        <p className="intro text-primary">{`PnL : ${payload[0].value.toFixed(2)} ${currencySymbol}`}</p>
       </div>
     );
   }
@@ -25,7 +25,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 
 export function PnlChart() {
-    const { address } = useWallet();
+    const { address, chain } = useWallet();
     const [chartData, setChartData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -174,7 +174,7 @@ export function PnlChart() {
             <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
             <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value.toFixed(0)}`} />
             <Tooltip
-              content={<CustomTooltip />}
+              content={<CustomTooltip currencySymbol={chain?.nativeCurrency.symbol} />}
             />
             <Area type="monotone" dataKey="pnl" stroke="hsl(var(--primary))" fill="url(#colorPnl)" strokeWidth={2} />
           </AreaChart>
