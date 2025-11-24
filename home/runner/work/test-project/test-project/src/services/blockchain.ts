@@ -75,6 +75,9 @@ class IntuitionService {
     if (!this.profileContractAddress) {
         throw new Error("User Profile contract address is not configured. Please check your environment variables.");
     }
+    if (this.profileContractAddress === '0x0000000000000000000000000000000000000000') {
+      console.warn("Warning: Using placeholder address for UserProfileRegistry. Profile functions will fail until a valid address is provided after deployment.");
+    }
     return this.profileContractAddress;
   }
 
