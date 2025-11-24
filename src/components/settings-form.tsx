@@ -3,7 +3,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useProfile, defaultProfile, avatarSeeds } from '@/lib/state/profile';
+import { useProfile, defaultProfile } from '@/lib/state/profile';
 import { useToast } from '@/hooks/use-toast';
 import { User, Bell, Trash2, Shield, Palette, Upload, Download, Moon, Sun, Camera, Lock, Twitter, Link as LinkIcon, Sliders, Save, Monitor, Smartphone, AlertOctagon, Check, Plus, LogOut, UserCog, ShieldCheck, QrCode, Wallet, Loader2 } from 'lucide-react';
 import { useEffect, useRef, useState, useMemo, useCallback } from 'react';

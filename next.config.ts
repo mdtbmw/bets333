@@ -43,6 +43,16 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      // Fix for @metamask/sdk issue with @react-native-async-storage/async-storage
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        '@react-native-async-storage/async-storage': false,
+      };
+    }
+    return config;
+  },
 };
 
 export default nextConfig;
