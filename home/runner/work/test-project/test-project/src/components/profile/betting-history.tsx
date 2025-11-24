@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { blockchainService } from '@/services/blockchain';
 import { useWallet } from '@/hooks/use-wallet';
 import type { Event, Bet, PnLBet } from '@/lib/types';
-import { formatEther, parseEther } from 'viem';
+import { formatEther, parseEther, Address } from 'viem';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle, Loader2 } from 'lucide-react';

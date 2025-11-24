@@ -17,7 +17,7 @@ import type {
   TypedEventLog,
   TypedListener,
   TypedContractMethod,
-} from "../../../common";
+} from "../../common";
 
 export interface IERC5267Interface extends Interface {
   getFunction(nameOrSignature: "eip712Domain"): FunctionFragment;
