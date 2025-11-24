@@ -44,7 +44,7 @@ async function main() {
   console.log(`\n====================================================================`);
   console.log(`   🎉  All Contracts Deployed Successfully! 🎉`);
   console.log(`====================================================================\n`);
-  console.log("Please copy the following lines and paste them into your .env file:\n");
+  console.log("ACTION REQUIRED: Copy these lines into your .env file:\n");
   // The final lines of output MUST be the addresses for scripts to capture them.
   console.log(`NEXT_PUBLIC_INTUITION_BETTING_ADDRESS=${bettingContractAddress}`);
   console.log(`NEXT_PUBLIC_USER_PROFILE_REGISTRY_ADDRESS=${profileContractAddress}`);
@@ -54,5 +54,3 @@ main().catch((error) => {
   console.error("\n❌ Deployment failed:", error);
   process.exitCode = 1;
 });
-
-    
