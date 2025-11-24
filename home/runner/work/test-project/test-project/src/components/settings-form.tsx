@@ -3,7 +3,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useProfile, defaultProfile, avatarSeeds } from '@/lib/state/profile';
+import { useProfile, defaultProfile } from '@/lib/state/profile';
 import { useToast } from '@/hooks/use-toast';
 import { User, Bell, Trash2, Shield, Palette, Upload, Download, Moon, Sun, Camera, Lock, Twitter, Link as LinkIcon, Sliders, Save, Monitor, Smartphone, AlertOctagon, Check, Plus, LogOut, UserCog, ShieldCheck, QrCode, Wallet, Loader2 } from 'lucide-react';
 import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
@@ -18,7 +18,7 @@ import { getRank, calculateUserStats } from '@/lib/ranks';
 import { Address } from 'viem';
 
 
-const DossierCard = ({ user, stats }: { user: { name: string; address: string | undefined, avatarSeed: string }, stats: UserStats | null }) => {
+const DossierCard = ({ user, stats, onAvatarClick }: { user: { name: string; address: string | undefined, avatarSeed: string }, stats: UserStats | null, onAvatarClick: () => void }) => {
     const cardRef = useRef<HTMLDivElement>(null);
     const profileUrl = typeof window !== 'undefined' ? `${window.location.origin}/profile/${user.address}` : '';
     
@@ -82,7 +82,7 @@ const DossierCard = ({ user, stats }: { user: { name: string; address: string | 
                         <div className="relative w-full h-full rounded-full p-[3px] bg-gradient-to-br from-primary to-zinc-800">
                             <img src={`https://api.dicebear.com/9.x/pixel-art/svg?seed=${user.avatarSeed}`} alt="Profile" className="rounded-full bg-background w-full h-full object-cover border-4 border-background"/>
                         </div>
-                        <button onClick={() => {}} disabled className="absolute bottom-0 right-0 w-8 h-8 bg-foreground text-background rounded-full flex items-center justify-center shadow-lg border-2 border-background cursor-not-allowed opacity-50">
+                        <button onClick={onAvatarClick} className="absolute bottom-0 right-0 w-8 h-8 bg-foreground text-background rounded-full flex items-center justify-center shadow-lg border-2 border-background cursor-pointer active-press transition-transform hover:scale-110">
                             <Camera className="w-4 h-4" />
                         </button>
                     </div>
@@ -220,7 +220,7 @@ export function SettingsForm() {
   return (
     <div className="flex flex-col xl:flex-row gap-8 items-start animate-slide-up">
         <div className="w-full xl:w-2/5 space-y-6">
-            <DossierCard user={{ name: localProfile.username, address, avatarSeed: localProfile.username || address || 'default' }} stats={stats} />
+            <DossierCard user={{ name: localProfile.username, address, avatarSeed: localProfile.username || address || 'default' }} stats={stats} onAvatarClick={() => setIsAvatarDialogOpen(true)} />
              <div className="bg-card/60 dark:glass-panel p-6 rounded-[2rem] border backdrop-blur-md">
                 <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">Signal Nodes</h3>
                 <div className="space-y-3">

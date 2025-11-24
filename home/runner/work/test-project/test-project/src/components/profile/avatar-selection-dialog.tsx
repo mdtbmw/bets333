@@ -24,6 +24,10 @@ export function AvatarSelectionDialog({ isOpen, onOpenChange, onSave }: AvatarSe
     const handleSave = () => {
         onSave(selectedSeed);
         onOpenChange(false);
+         toast({
+            title: "Avatar Selected",
+            description: `Your identity has been updated to "${selectedSeed}". Save your settings to confirm on-chain.`,
+        });
     };
 
     return (
