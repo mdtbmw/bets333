@@ -51,7 +51,7 @@ class IntuitionService {
       try {
         this.bettingContractAddress = getAddress(bettingAddressRaw);
       } catch {
-        console.error(`FATAL_ERROR: The provided NEXT_PUBLIC_INTUITION_BETTING_ADDRESS "${bettingAddressRaw}" is not a valid Ethereum address.`);
+        console.error(`FATAL_ERROR: The provided NEXT_PUBLIC_INTUITION_BETTING_ADDRESS "${bettingAddressRaw}" is not a valid Ethereum address. Please check your .env file.`);
       }
     }
 
@@ -59,21 +59,26 @@ class IntuitionService {
       try {
         this.profileContractAddress = getAddress(profileAddressRaw);
       } catch {
-        console.error(`FATAL_ERROR: The provided NEXT_PUBLIC_USER_PROFILE_REGISTRY_ADDRESS "${profileAddressRaw}" is not a valid Ethereum address.`);
+        console.error(`FATAL_ERROR: The provided NEXT_PUBLIC_USER_PROFILE_REGISTRY_ADDRESS "${profileAddressRaw}" is not a valid Ethereum address. Please check your .env file.`);
       }
     }
   }
 
   private getBettingContractAddress(): Address {
     if (!this.bettingContractAddress) {
-      throw new Error("Betting contract address is not configured. Please check your environment variables.");
+        console.warn("Warning: NEXT_PUBLIC_INTUITION_BETTING_ADDRESS is not configured. Event-related features will be disabled until a valid address is provided after deployment.");
+        return '0x0000000000000000000000000000000000000000';
     }
     return this.bettingContractAddress;
   }
 
   private getProfileContractAddress(): Address {
     if (!this.profileContractAddress) {
-      throw new Error("User Profile contract address is not configured. Please check your environment variables.");
+        console.warn("Warning: NEXT_PUBLIC_USER_PROFILE_REGISTRY_ADDRESS is not configured. Profile features will be disabled until a valid address is provided after deployment.");
+        return '0x0000000000000000000000000000000000000000';
+    }
+    if (this.profileContractAddress === '0x0000000000000000000000000000000000000000') {
+      console.warn("Warning: Using placeholder address for UserProfileRegistry. Profile functions will fail until a valid address is provided after deployment.");
     }
     return this.profileContractAddress;
   }
@@ -154,6 +159,7 @@ class IntuitionService {
 
   async getPlatformFee(): Promise<number> {
     const address = this.getBettingContractAddress();
+     if (address === '0x0000000000000000000000000000000000000000') return 300; // Return default if contract not set
 
     try {
       const feeBps = await this.publicClient.readContract({
@@ -176,6 +182,9 @@ class IntuitionService {
 
     try {
       const address = this.getBettingContractAddress();
+       if (address === '0x0000000000000000000000000000000000000000') {
+           return []; // Return empty array if contract not set
+       }
 
       const nextId = await this.publicClient.readContract({
         address: address,
@@ -235,6 +244,7 @@ class IntuitionService {
 
   async getEventById(eventId: string): Promise<Event | null> {
     const address = this.getBettingContractAddress();
+    if (address === '0x0000000000000000000000000000000000000000') return null;
 
     if (eventsCache) {
       const cachedEvent = eventsCache.find(e => e.id === eventId);
@@ -262,6 +272,7 @@ class IntuitionService {
 
   async getMultipleUserBets(eventIds: bigint[], userAddress: Address): Promise<{ yesAmount: bigint, noAmount: bigint, claimed: boolean }[]> {
     const address = this.getBettingContractAddress();
+     if (address === '0x0000000000000000000000000000000000000000') return [];
 
     try {
       const betPromises = eventIds.map(id =>
@@ -286,6 +297,7 @@ class IntuitionService {
 
   async getAllLogs(userAddress?: Address): Promise<AllLogs> {
     const address = this.getBettingContractAddress();
+    if (address === '0x0000000000000000000000000000000000000000') return { betPlaced: [], winningsClaimed: [], eventCanceled: [] };
 
     try {
       const fromBlock = 0n;
@@ -500,6 +512,8 @@ class IntuitionService {
 
   async getProfile(userAddress: Address): Promise<UserProfile> {
     const address = this.getProfileContractAddress();
+    if (address === '0x0000000000000000000000000000000000000000') return { username: '', bio: '', twitter: '', website: '' };
+
     try {
       const profileData = await this.publicClient.readContract({
         address,

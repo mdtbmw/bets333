@@ -29,6 +29,10 @@ declare module "hardhat/types/runtime" {
       name: "IntuitionVault",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IntuitionVault__factory>;
+    getContractFactory(
+      name: "UserProfileRegistry",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.UserProfileRegistry__factory>;
 
     getContractAt(
       name: "Ownable",
@@ -50,6 +54,11 @@ declare module "hardhat/types/runtime" {
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.IntuitionVault>;
+    getContractAt(
+      name: "UserProfileRegistry",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.UserProfileRegistry>;
 
     deployContract(
       name: "Ownable",
@@ -67,6 +76,10 @@ declare module "hardhat/types/runtime" {
       name: "IntuitionVault",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IntuitionVault>;
+    deployContract(
+      name: "UserProfileRegistry",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.UserProfileRegistry>;
 
     deployContract(
       name: "Ownable",
@@ -88,6 +101,11 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IntuitionVault>;
+    deployContract(
+      name: "UserProfileRegistry",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.UserProfileRegistry>;
 
     // default types
     getContractFactory(

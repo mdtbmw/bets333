@@ -14,3 +14,5 @@ export type { IntuitionBettingOracle } from "./contracts/IntuitionBettingOracle"
 export { IntuitionBettingOracle__factory } from "./factories/contracts/IntuitionBettingOracle__factory";
 export type { IntuitionVault } from "./contracts/IntuitionVault";
 export { IntuitionVault__factory } from "./factories/contracts/IntuitionVault__factory";
+export type { UserProfileRegistry } from "./contracts/UserProfileRegistry";
+export { UserProfileRegistry__factory } from "./factories/contracts/UserProfileRegistry__factory";

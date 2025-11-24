@@ -3,3 +3,4 @@
 /* eslint-disable */
 export { IntuitionBettingOracle__factory } from "./IntuitionBettingOracle__factory";
 export { IntuitionVault__factory } from "./IntuitionVault__factory";
+export { UserProfileRegistry__factory } from "./UserProfileRegistry__factory";

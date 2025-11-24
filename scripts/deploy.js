@@ -1,3 +1,4 @@
+
 const hre = require("hardhat");
 require('dotenv').config();
 
@@ -43,7 +44,7 @@ async function main() {
   console.log(`\n====================================================================`);
   console.log(`   🎉  All Contracts Deployed Successfully! 🎉`);
   console.log(`====================================================================\n`);
-  console.log("Please update your .env file with these addresses:\n");
+  console.log("ACTION REQUIRED: Copy these lines into your .env file:\n");
   // The final lines of output MUST be the addresses for scripts to capture them.
   console.log(`NEXT_PUBLIC_INTUITION_BETTING_ADDRESS=${bettingContractAddress}`);
   console.log(`NEXT_PUBLIC_USER_PROFILE_REGISTRY_ADDRESS=${profileContractAddress}`);
