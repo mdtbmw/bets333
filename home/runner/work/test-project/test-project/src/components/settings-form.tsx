@@ -17,7 +17,7 @@ import { AvatarSelectionDialog } from './profile/avatar-selection-dialog';
 import { getRank, calculateUserStats } from '@/lib/ranks';
 import { Address } from 'viem';
 import { avatarSeeds } from '@/lib/state/profile';
-import { Skeleton } from './ui/skeleton';
+import { Skeleton } from '@/components/ui/skeleton';
 
 
 const DossierCard = ({ user, stats, onAvatarClick }: { user: { name: string; address: string | undefined, avatarSeed: string }, stats: UserStats | null, onAvatarClick: () => void }) => {
