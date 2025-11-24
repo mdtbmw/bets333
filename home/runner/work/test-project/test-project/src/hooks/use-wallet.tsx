@@ -2,19 +2,18 @@
 'use client';
 
 import { useAccount, useBalance, useDisconnect, useSwitchChain, useWalletClient } from 'wagmi';
-import { useWeb3Modal, useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react';
+import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { useIsMounted } from './use-is-mounted';
 import { activeChain } from '@/lib/chains';
 
 export function useWallet() {
+  const { address, isConnected, isConnecting, chain } = useAccount();
   const { open } = useWeb3Modal();
-  const { address, isConnected, chainId } = useWeb3ModalAccount();
-  const { walletProvider } = useWeb3ModalProvider();
+  const { switchChain } = useSwitchChain();
   const { disconnect } = useDisconnect();
-  const { switchChain: wagmiSwitchChain } = useSwitchChain();
   const isMounted = useIsMounted();
   
-  const { data: walletClient } = useWalletClient({ chainId: chainId });
+  const { data: walletClient } = useWalletClient({ chainId: chain?.id });
 
   const { data: balanceData, isLoading: balanceLoading, refetch: fetchBalance } = useBalance({ 
     address,
@@ -22,13 +21,13 @@ export function useWallet() {
 
   const balance = balanceData ? parseFloat(balanceData.formatted) : 0;
   const connected = isMounted && isConnected;
-  const wrongNetwork = isMounted && isConnected && chainId !== activeChain.id;
+  const wrongNetwork = isMounted && isConnected && chain?.id !== activeChain.id;
 
   return {
     address,
     connected,
-    isConnecting: !isMounted && !isConnected,
-    chain: isConnected ? activeChain : undefined,
+    isConnecting: isConnecting || !isMounted,
+    chain,
     balance,
     balanceLoading,
     fetchBalance,
@@ -36,6 +35,6 @@ export function useWallet() {
     disconnect,
     walletClient,
     wrongNetwork,
-    switchChain: () => wagmiSwitchChain?.({ chainId: activeChain.id }),
+    switchChain: () => switchChain({ chainId: activeChain.id }),
   };
 }

@@ -3,7 +3,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useProfile, defaultProfile } from '@/lib/state/profile';
+import { useProfile, defaultProfile, avatarSeeds } from '@/lib/state/profile';
 import { useToast } from '@/hooks/use-toast';
 import { User, Bell, Trash2, Shield, Palette, Upload, Download, Moon, Sun, Camera, Lock, Twitter, Link as LinkIcon, Sliders, Save, Monitor, Smartphone, AlertOctagon, Check, Plus, LogOut, UserCog, ShieldCheck, QrCode, Wallet, Loader2 } from 'lucide-react';
 import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
@@ -16,7 +16,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { AvatarSelectionDialog } from './profile/avatar-selection-dialog';
 import { getRank, calculateUserStats } from '@/lib/ranks';
 import { Address } from 'viem';
-import { avatarSeeds } from '@/lib/state/profile';
 
 
 const DossierCard = ({ user, stats }: { user: { name: string; address: string | undefined, avatarSeed: string }, stats: UserStats | null }) => {
