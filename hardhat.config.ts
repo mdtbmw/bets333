@@ -27,10 +27,6 @@ const config: HardhatUserConfig = {
       accounts: [deployerPrivateKey],
     },
   } : {},
-  // This setting is crucial for compatibility with ethers v6
-  typechain: {
-    alwaysGenerateOverloads: false,
-  },
 };
 
 export default config;
