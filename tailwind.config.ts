@@ -1,5 +1,7 @@
 
-import type {Config} from 'tailwindcss';
+import type { Config } from 'tailwindcss';
+import tailwindcssAnimate from 'tailwindcss-animate';
+import containerQueries from '@tailwindcss/container-queries';
 
 const config: Config = {
   darkMode: ['class'],
@@ -57,15 +59,15 @@ const config: Config = {
           foreground: 'hsl(var(--card-foreground))',
         },
         gold: {
-            DEFAULT: '#F59E0B',
-            600: '#D97706', // amber-600
-            500: '#F59E0B', // amber-500
-            400: '#FBBF24', // amber-400
-            300: '#FCD34D', // amber-300
-            glow: 'rgba(245, 158, 11, 0.15)'
+          DEFAULT: '#F59E0B',
+          600: '#D97706', // amber-600
+          500: '#F59E0B', // amber-500
+          400: '#FBBF24', // amber-400
+          300: '#FCD34D', // amber-300
+          glow: 'rgba(245, 158, 11, 0.15)'
         },
-         yellow: {
-            700: '#B45309' // amber-700
+        yellow: {
+          700: '#B45309' // amber-700
         },
         emerald: { 500: '#10B981', 400: '#34D399', glow: 'rgba(16, 185, 129, 0.3)' },
         rose: { 500: '#F43F5E', 400: '#FB7185', glow: 'rgba(244, 63, 94, 0.3)' },
@@ -109,12 +111,12 @@ const config: Config = {
           '100%': { transform: 'translateX(200%)' },
         },
         blink: {
-            '0%, 100%': { opacity: '1' },
-            '50%': { opacity: '0' },
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0' },
         },
         shimmer: {
-            '0%': { backgroundPosition: '-1000px 0' },
-            '100%': { backgroundPosition: '1000px 0' },
+          '0%': { backgroundPosition: '-1000px 0' },
+          '100%': { backgroundPosition: '1000px 0' },
         },
         'spin-slow': {
           'from': { transform: 'rotate(0deg)' },
@@ -143,14 +145,16 @@ const config: Config = {
         'scroll-vertical': 'scroll-vertical 40s linear infinite',
         'marquee': 'marquee linear infinite',
       },
-       backgroundImage: {
-          'holographic': 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 20%, rgba(255,255,255,0.1) 40%, rgba(255,255,255,0) 60%, rgba(255,255,255,0.1) 80%, rgba(255,255,255,0) 100%)',
-          'noise': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%221%22/%3E%3C/svg%3E')",
+      backgroundImage: {
+        'holographic': 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 20%, rgba(255,255,255,0.1) 40%, rgba(255,255,255,0) 60%, rgba(255,255,255,0.1) 80%, rgba(255,255,255,0) 100%)',
+        'noise': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%221%22/%3E%3C/svg%3E')",
       }
     },
   },
   plugins: [
+    // @ts-ignore
     require('tailwindcss-animate'),
+    // @ts-ignore
     require('@tailwindcss/container-queries'),
     function ({ addUtilities }: { addUtilities: any }) {
       addUtilities({

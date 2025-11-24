@@ -1,15 +1,11 @@
 
-'use client';
-
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react';
-import { http, createConfig } from 'wagmi';
-import { activeChain } from './chains';
-import React from 'react';
+import { activeChain, chains } from '@/lib/chains';
 
-export const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
+const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
 
 if (!projectId) {
-  throw new Error('NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID is not set');
+  console.warn("WalletConnect Project ID is not set. Mobile wallet connections will not work.");
 }
 
 const metadata = {
@@ -19,24 +15,19 @@ const metadata = {
   icons: ['https://avatars.githubusercontent.com/u/37784886']
 };
 
-export const config = createConfig({
-  chains: [activeChain],
-  transports: {
-    [activeChain.id]: http()
-  },
+export const wagmiConfig = defaultConfig({
+  metadata,
+  defaultChainId: activeChain.id,
+  enableEIP6963: true,
+  enableCoinbase: false,
+  enableEmail: false,
+  enableInjected: true,
 });
 
 createWeb3Modal({
-  ethersConfig: defaultConfig({
-    metadata,
-    defaultChainId: activeChain.id,
-    enableEIP6963: true,
-    enableInjected: true,
-    enableCoinbase: true, 
-  }),
-  chains: [activeChain],
-  projectId,
-  enableAnalytics: true,
+  ethersConfig: wagmiConfig,
+  chains,
+  projectId: projectId || 'dummy-project-id',
   themeMode: 'dark',
   themeVariables: {
     '--w3m-accent': 'hsl(var(--primary))',

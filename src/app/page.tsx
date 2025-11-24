@@ -1,6 +1,7 @@
-
 'use client';
 
+import { useWallet } from '@/hooks/use-wallet';
+import { LandingPage } from '@/components/landing-page';
 import { GreetingCard } from '@/components/dashboard/greeting-card';
 import { CategoryCarousel } from '@/components/dashboard/category-carousel';
 import { EventList } from '@/components/event-list';
@@ -11,7 +12,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import type { EventStatus } from '@/lib/types';
 
 
-export default function Page() {
+function Dashboard() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -24,27 +25,23 @@ export default function Page() {
   const [activeFilter, setActiveFilter] = useState(initialFilter);
 
   useEffect(() => {
-    // This effect can cause issues during server-side rendering or hydration if window is accessed.
-    // It's better to run it only on the client after mount.
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      if (categoryFilter !== 'All') {
-        params.set('category', categoryFilter);
-      } else {
-        params.delete('category');
-      }
-      if (searchTerm) {
-        params.set('q', searchTerm);
-      } else {
-        params.delete('q');
-      }
-      if (activeFilter) {
-        params.set('filter', activeFilter);
-      } else {
-        params.delete('filter');
-      }
-      router.replace(`/?${params.toString()}`, { scroll: false });
+    const params = new URLSearchParams(window.location.search);
+    if (categoryFilter !== 'All') {
+      params.set('category', categoryFilter);
+    } else {
+      params.delete('category');
     }
+    if (searchTerm) {
+      params.set('q', searchTerm);
+    } else {
+      params.delete('q');
+    }
+     if (activeFilter) {
+      params.set('filter', activeFilter);
+    } else {
+      params.delete('filter');
+    }
+    router.replace(`/?${params.toString()}`, { scroll: false });
   }, [categoryFilter, searchTerm, activeFilter, router]);
   
   const getEventListProps = () => {
@@ -76,4 +73,14 @@ export default function Page() {
       </div>
     </div>
   );
+}
+
+export default function Page() {
+  const { connected } = useWallet();
+
+  if (!connected) {
+    return <LandingPage />;
+  }
+
+  return <Dashboard />;
 }

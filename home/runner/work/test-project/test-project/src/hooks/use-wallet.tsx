@@ -1,13 +1,10 @@
 
 'use client';
 
-import { useWeb3Modal, useWeb3ModalProvider, useDisconnect, useWeb3ModalAccount } from '@web3modal/ethers/react';
+import { useAccount, useBalance, useDisconnect, useSwitchChain, useWalletClient } from 'wagmi';
+import { useWeb3Modal, useWeb3ModalAccount, useWeb3ModalProvider } from '@web3modal/ethers/react';
 import { useIsMounted } from './use-is-mounted';
 import { activeChain } from '@/lib/chains';
-import { BrowserProvider } from 'ethers';
-import { useCallback, useState, useEffect } from 'react';
-import { useAccount, useBalance, useSwitchChain } from 'wagmi';
-import { formatEther } from 'viem';
 
 export function useWallet() {
   const { open } = useWeb3Modal();
@@ -15,57 +12,30 @@ export function useWallet() {
   const { walletProvider } = useWeb3ModalProvider();
   const { disconnect } = useDisconnect();
   const { switchChain: wagmiSwitchChain } = useSwitchChain();
-
-  const [balance, setBalance] = useState(0);
   const isMounted = useIsMounted();
+  
+  const { data: walletClient } = useWalletClient({ chainId: chainId });
 
-  const { isConnecting: isWagmiConnecting } = useAccount();
-
-  const connected = isMounted && isConnected;
-  const isConnecting = !isMounted || isWagmiConnecting;
-  const wrongNetwork = isMounted && isConnected && chainId !== activeChain.id;
-
-  const { data: wagmiBalance, isLoading: isBalanceLoading, refetch } = useBalance({
+  const { data: balanceData, isLoading: balanceLoading, refetch: fetchBalance } = useBalance({ 
     address,
   });
 
-  useEffect(() => {
-    if (wagmiBalance) {
-      setBalance(Number(formatEther(wagmiBalance.value)));
-    } else {
-      setBalance(0);
-    }
-  }, [wagmiBalance]);
+  const balance = balanceData ? parseFloat(balanceData.formatted) : 0;
+  const connected = isMounted && isConnected;
+  const wrongNetwork = isMounted && isConnected && chainId !== activeChain.id;
 
-  const fetchBalance = useCallback(() => {
-    if (address) {
-      refetch();
-    }
-  }, [address, refetch]);
-  
-  const switchChain = useCallback(() => {
-      if (wagmiSwitchChain) {
-          wagmiSwitchChain({ chainId: activeChain.id });
-      } else {
-          open({ view: 'Networks' });
-      }
-  }, [wagmiSwitchChain, open]);
-
-
-  const walletClient = walletProvider ? new BrowserProvider(walletProvider, chainId) : null;
-  
   return {
     address,
     connected,
-    isConnecting,
-    chain: activeChain,
+    isConnecting: !isMounted && !isConnected,
+    chain: isConnected ? activeChain : undefined,
     balance,
-    balanceLoading: isBalanceLoading,
+    balanceLoading,
     fetchBalance,
     connectWallet: open,
     disconnect,
     walletClient,
     wrongNetwork,
-    switchChain,
+    switchChain: () => wagmiSwitchChain?.({ chainId: activeChain.id }),
   };
 }

@@ -30,6 +30,7 @@ export declare namespace IntuitionBettingOracle {
     description: string;
     category: string;
     imageUrl: string;
+    startDate: BigNumberish;
     bettingStopDate: BigNumberish;
     resolutionDate: BigNumberish;
     minStake: BigNumberish;
@@ -46,6 +47,7 @@ export declare namespace IntuitionBettingOracle {
     description: string,
     category: string,
     imageUrl: string,
+    startDate: bigint,
     bettingStopDate: bigint,
     resolutionDate: bigint,
     minStake: bigint,
@@ -60,6 +62,7 @@ export declare namespace IntuitionBettingOracle {
     description: string;
     category: string;
     imageUrl: string;
+    startDate: bigint;
     bettingStopDate: bigint;
     resolutionDate: bigint;
     minStake: bigint;
@@ -129,6 +132,7 @@ export interface IntuitionBettingOracleInterface extends Interface {
       string,
       string,
       string,
+      BigNumberish,
       BigNumberish,
       BigNumberish,
       BigNumberish,
@@ -292,6 +296,7 @@ export namespace EventCreatedEvent {
     description: string,
     category: string,
     imageUrl: string,
+    startDate: BigNumberish,
     bettingStopDate: BigNumberish,
     resolutionDate: BigNumberish,
     minStake: BigNumberish,
@@ -303,6 +308,7 @@ export namespace EventCreatedEvent {
     description: string,
     category: string,
     imageUrl: string,
+    startDate: bigint,
     bettingStopDate: bigint,
     resolutionDate: bigint,
     minStake: bigint,
@@ -314,6 +320,7 @@ export namespace EventCreatedEvent {
     description: string;
     category: string;
     imageUrl: string;
+    startDate: bigint;
     bettingStopDate: bigint;
     resolutionDate: bigint;
     minStake: bigint;
@@ -425,6 +432,7 @@ export interface IntuitionBettingOracle extends BaseContract {
       desc: string,
       cat: string,
       img: string,
+      start: BigNumberish,
       bettingStop: BigNumberish,
       resolution: BigNumberish,
       minStake: BigNumberish,
@@ -450,6 +458,7 @@ export interface IntuitionBettingOracle extends BaseContract {
         bigint,
         bigint,
         bigint,
+        bigint,
         bigint
       ] & {
         id: bigint;
@@ -457,6 +466,7 @@ export interface IntuitionBettingOracle extends BaseContract {
         description: string;
         category: string;
         imageUrl: string;
+        startDate: bigint;
         bettingStopDate: bigint;
         resolutionDate: bigint;
         minStake: bigint;
@@ -560,6 +570,7 @@ export interface IntuitionBettingOracle extends BaseContract {
       desc: string,
       cat: string,
       img: string,
+      start: BigNumberish,
       bettingStop: BigNumberish,
       resolution: BigNumberish,
       minStake: BigNumberish,
@@ -586,6 +597,7 @@ export interface IntuitionBettingOracle extends BaseContract {
         bigint,
         bigint,
         bigint,
+        bigint,
         bigint
       ] & {
         id: bigint;
@@ -593,6 +605,7 @@ export interface IntuitionBettingOracle extends BaseContract {
         description: string;
         category: string;
         imageUrl: string;
+        startDate: bigint;
         bettingStopDate: bigint;
         resolutionDate: bigint;
         minStake: bigint;
@@ -747,7 +760,7 @@ export interface IntuitionBettingOracle extends BaseContract {
       EventCanceledEvent.OutputObject
     >;
 
-    "EventCreated(uint256,string,string,string,string,uint256,uint256,uint256,uint256)": TypedContractEvent<
+    "EventCreated(uint256,string,string,string,string,uint256,uint256,uint256,uint256,uint256)": TypedContractEvent<
       EventCreatedEvent.InputTuple,
       EventCreatedEvent.OutputTuple,
       EventCreatedEvent.OutputObject
@@ -792,5 +805,3 @@ export interface IntuitionBettingOracle extends BaseContract {
     >;
   };
 }
-
-    

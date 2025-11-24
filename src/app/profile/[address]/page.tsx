@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
@@ -202,5 +201,3 @@ export default function PublicProfilePage() {
         </div>
     )
 }
-
-    

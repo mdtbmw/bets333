@@ -17,10 +17,9 @@ import { AvatarSelectionDialog } from './profile/avatar-selection-dialog';
 import { getRank, calculateUserStats } from '@/lib/ranks';
 import { Address } from 'viem';
 import { avatarSeeds } from '@/lib/state/profile';
-import { Skeleton } from '@/components/ui/skeleton';
 
 
-const DossierCard = ({ user, stats, onAvatarClick }: { user: { name: string; address: string | undefined, avatarSeed: string }, stats: UserStats | null, onAvatarClick: () => void }) => {
+const DossierCard = ({ user, stats }: { user: { name: string; address: string | undefined, avatarSeed: string }, stats: UserStats | null }) => {
     const cardRef = useRef<HTMLDivElement>(null);
     const profileUrl = typeof window !== 'undefined' ? `${window.location.origin}/profile/${user.address}` : '';
     
@@ -64,7 +63,8 @@ const DossierCard = ({ user, stats, onAvatarClick }: { user: { name: string; add
     }, []);
 
     return (
-        <div className="perspective-[1000px]">
+        <>
+         <div className="perspective-[1000px]">
             <div id="profile-card" ref={cardRef} className="card-3d relative w-full aspect-[0.8] sm:aspect-auto xl:aspect-[0.7] rounded-[2.5rem] overflow-hidden shadow-2xl shadow-black/60 bg-card group border border-border">
                 <div className="absolute inset-0 bg-background/10 dark:bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] dark:opacity-20"></div>
                 <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-black/5 dark:to-black"></div>
@@ -83,7 +83,7 @@ const DossierCard = ({ user, stats, onAvatarClick }: { user: { name: string; add
                         <div className="relative w-full h-full rounded-full p-[3px] bg-gradient-to-br from-primary to-zinc-800">
                             <img src={`https://api.dicebear.com/9.x/pixel-art/svg?seed=${user.avatarSeed}`} alt="Profile" className="rounded-full bg-background w-full h-full object-cover border-4 border-background"/>
                         </div>
-                        <button onClick={onAvatarClick} className="absolute bottom-0 right-0 w-8 h-8 bg-foreground text-background rounded-full flex items-center justify-center shadow-lg border-2 border-background cursor-pointer active-press hover:scale-110 transition-transform">
+                        <button onClick={() => {}} disabled className="absolute bottom-0 right-0 w-8 h-8 bg-foreground text-background rounded-full flex items-center justify-center shadow-lg border-2 border-background cursor-not-allowed opacity-50">
                             <Camera className="w-4 h-4" />
                         </button>
                     </div>
@@ -104,6 +104,7 @@ const DossierCard = ({ user, stats, onAvatarClick }: { user: { name: string; add
                 </div>
             </div>
         </div>
+        </>
     )
 }
 
@@ -125,8 +126,8 @@ export function SettingsForm() {
   const [isSaving, setIsSaving] = useState(false);
   const [isAvatarDialogOpen, setIsAvatarDialogOpen] = useState(false);
 
-  const pageLoading = isProfileLoading || statsLoading;
 
+  // When the on-chain profile loads, update our local form state
   useEffect(() => {
     if (profile) {
       setLocalProfile(profile);
@@ -141,6 +142,7 @@ export function SettingsForm() {
     setLocalProfile(prev => ({ ...prev, username: newUsername }));
   }
 
+  // Fetch user stats for the dossier
   const fetchUserStats = useCallback(async () => {
     if (!address) {
         setStatsLoading(false);
@@ -151,6 +153,7 @@ export function SettingsForm() {
         const allEvents = await blockchainService.getAllEvents();
         if (allEvents.length === 0) {
             setStats({ wins: 0, losses: 0, totalBets: 0, accuracy: 0, trustScore: 0 });
+            setStatsLoading(false);
             return;
         }
         const eventIds = allEvents.map(e => BigInt(e.id));
@@ -218,10 +221,7 @@ export function SettingsForm() {
   return (
     <div className="flex flex-col xl:flex-row gap-8 items-start animate-slide-up">
         <div className="w-full xl:w-2/5 space-y-6">
-            {pageLoading ? 
-                <Skeleton className="w-full aspect-[0.8] sm:aspect-auto xl:aspect-[0.7] rounded-[2.5rem]" /> :
-                <DossierCard user={{ name: localProfile.username, address, avatarSeed: localProfile.username || address || 'default' }} stats={stats} onAvatarClick={() => setIsAvatarDialogOpen(true)} />
-            }
+            <DossierCard user={{ name: localProfile.username, address, avatarSeed: localProfile.username || address || 'default' }} stats={stats} />
              <div className="bg-card/60 dark:glass-panel p-6 rounded-[2rem] border backdrop-blur-md">
                 <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">Signal Nodes</h3>
                 <div className="space-y-3">

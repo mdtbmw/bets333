@@ -4,9 +4,15 @@ This document is your final checklist before initiating a production deployment.
 
 ### Phase 1: Configuration
 
-- [ ] **`.env` file is complete:** All required environment variables listed in `README.md` have been filled out with your **production** keys and addresses.
+- [ ] **`.env` file is complete:** All required environment variables are set:
+    - `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID`
+    - `NEXT_PUBLIC_ADMIN_ADDRESS`
+    - `NEXT_PUBLIC_INTUITION_BETTING_ADDRESS`
+    - `NEXT_PUBLIC_USER_PROFILE_REGISTRY_ADDRESS`
+    - `NEXT_PUBLIC_INTUITION_RPC`
+    - `NEXT_PUBLIC_INTUITION_CHAIN_ID`
 - [ ] **Vercel Project Created:** You have created a new project in your Vercel dashboard.
-- [ ] **Vercel Environment Variables Set:** You have copied all variables from your local `.env` file to the Environment Variables settings in your Vercel project dashboard. This is critical for the deployed application to function.
+- [ ] **Vercel Environment Variables Set:** You have added all the above variables to the Vercel project settings.
 
 ### Phase 2: Code & Quality
 
