@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useWallet } from "@/hooks/use-wallet";
@@ -9,7 +10,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { blockchainService } from "@/services/blockchain";
 import type { UserStats } from "@/lib/types";
 import { calculateUserStats } from "@/lib/ranks";
-import { Hex } from 'viem';
+import { Hex, Address } from 'viem';
 
 export function UserProfileStats() {
   const { address, connected, balance, balanceLoading, chain } = useWallet();
@@ -41,26 +42,28 @@ export function UserProfileStats() {
         allLogs.betPlaced.forEach(log => { if (log.user) bettors.add(log.user); });
         const bettorsArray = Array.from(bettors);
 
-        const allUserStats = await Promise.all(bettorsArray.map(async (bettor) => {
-            const userBetsOnAllEvents = await blockchainService.getMultipleUserBets(eventIds, bettor);
-            const stats = calculateUserStats(allEvents, userBetsOnAllEvents);
-            return {
-                id: bettor,
-                trustScore: stats.trustScore,
-                totalBets: stats.totalBets
-            };
-        }));
-        
-        const sortedLeaderboard = allUserStats.sort((a, b) => b.trustScore - a.trustScore || b.totalBets - a.totalBets);
-        const currentUserIndex = sortedLeaderboard.findIndex(u => u.id.toLowerCase() === address.toLowerCase());
-        
-        if (currentUserIndex !== -1) {
-            setUserRank({ rank: currentUserIndex + 1, total: sortedLeaderboard.length });
+        if (bettorsArray.length > 0) {
+            const allUserStats = await Promise.all(bettorsArray.map(async (bettor) => {
+                const userBetsOnAllEvents = await blockchainService.getMultipleUserBets(eventIds, bettor);
+                const stats = calculateUserStats(allEvents, userBetsOnAllEvents);
+                return {
+                    id: bettor,
+                    trustScore: stats.trustScore,
+                    totalBets: stats.totalBets
+                };
+            }));
+            
+            const sortedLeaderboard = allUserStats.sort((a, b) => b.trustScore - a.trustScore || b.totalBets - a.totalBets);
+            const currentUserIndex = sortedLeaderboard.findIndex(u => u.id.toLowerCase() === address.toLowerCase());
+            
+            if (currentUserIndex !== -1) {
+                setUserRank({ rank: currentUserIndex + 1, total: sortedLeaderboard.length });
+            }
         }
         // --- End of rank calculation ---
 
         // --- Start of current user stats calc ---
-        const userBetsOnAllEvents = await blockchainService.getMultipleUserBets(eventIds, address);
+        const userBetsOnAllEvents = await blockchainService.getMultipleUserBets(eventIds, address as Address);
         const newStats = calculateUserStats(allEvents, userBetsOnAllEvents);
         
         setStats(newStats);

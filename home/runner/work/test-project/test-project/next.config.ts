@@ -48,7 +48,6 @@ const nextConfig: NextConfig = {
       // Resolve WebView and storage issues with wallet SDKs on the client-side
       config.resolve.fallback = {
         ...config.resolve.fallback,
-        'react-native-webview': false,
         '@react-native-async-storage/async-storage': false,
         'pino-pretty': false,
       };
