@@ -92,3 +92,5 @@ export function AvatarSelectionDialog({ isOpen, onOpenChange, onSave }: AvatarSe
         </Dialog>
     );
 }
+
+    
