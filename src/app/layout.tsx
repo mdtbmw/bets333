@@ -1,6 +1,6 @@
 
-import type { Metadata } from 'next';
-import './globals.css';
+import type { Metadata, Viewport } from 'next';
+import '@/app/globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/theme-provider';
 import { cn } from '@/lib/utils';
@@ -10,7 +10,7 @@ import Head from 'next/head';
 import { Web3Provider } from '@/components/web3-provider';
 import { Provider as JotaiProvider } from 'jotai';
 import { NotificationsProvider } from '@/lib/state/notifications';
-import { SettingsProvider } from '@/lib/state/settings';
+import { ProfileProvider } from '@/lib/state/profile';
 import { HeaderStateProvider } from '@/lib/state/header';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
@@ -20,12 +20,13 @@ const jetbrainsMono = JetBrainsMono({ subsets: ['latin'], variable: '--font-jetb
 export const metadata: Metadata = {
   title: 'Intuition BETs — The Signal in the Noise',
   description: 'A premium prediction arena. High stakes, pure signal, verified outcomes.',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
@@ -51,7 +52,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <Web3Provider>
-              <SettingsProvider>
+              <ProfileProvider>
                 <NotificationsProvider>
                   <HeaderStateProvider>
                     <MainLayout>
@@ -59,7 +60,7 @@ export default function RootLayout({
                     </MainLayout>
                   </HeaderStateProvider>
                 </NotificationsProvider>
-              </SettingsProvider>
+              </ProfileProvider>
             </Web3Provider>
             <Toaster />
           </ThemeProvider>

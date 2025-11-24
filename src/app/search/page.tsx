@@ -279,7 +279,7 @@ export default function OracleSearchPage() {
                     </Button>
                 )}
             </div>
-
+            
             <div className="lg:col-span-1">
                 <AlphaStream />
             </div>

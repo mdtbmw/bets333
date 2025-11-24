@@ -1,5 +1,4 @@
 
-
 import type {Config} from 'tailwindcss';
 
 const config: Config = {
@@ -124,7 +123,11 @@ const config: Config = {
         'scroll-vertical': {
           '0%': { transform: 'translateY(0%)' },
           '100%': { transform: 'translateY(-50%)' },
-        }
+        },
+        'marquee': {
+          from: { transform: 'translateX(0)' },
+          to: { transform: 'translateX(calc(-100% - 1rem))' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -138,6 +141,7 @@ const config: Config = {
         'shimmer': 'shimmer 3s linear infinite',
         'spin-slow': 'spin 12s linear infinite',
         'scroll-vertical': 'scroll-vertical 40s linear infinite',
+        'marquee': 'marquee linear infinite',
       },
        backgroundImage: {
           'holographic': 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 20%, rgba(255,255,255,0.1) 40%, rgba(255,255,255,0) 60%, rgba(255,255,255,0.1) 80%, rgba(255,255,255,0) 100%)',

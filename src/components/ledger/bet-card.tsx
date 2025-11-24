@@ -8,6 +8,9 @@ import { Button } from "../ui/button";
 import { Loader2, Link as LinkIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
+// This component is obsolete and has been replaced by the one in `components/profile`
+// It is left here to avoid breaking imports but should not be used.
+
 const getOutcomeBadge = (bet: PnLBet) => {
     switch (bet.outcome) {
       case "Won":

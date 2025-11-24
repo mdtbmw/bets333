@@ -21,7 +21,7 @@ import {
 import { useNotifications } from '@/lib/state/notifications';
 import { ScrollArea } from '../ui/scroll-area';
 import { formatDistanceToNowStrict } from 'date-fns';
-import { useSettings } from '@/lib/state/settings';
+import { useProfile } from '@/lib/state/profile';
 import { navLinks } from '@/lib/nav-links';
 import { Logo } from '../ui/logo';
 import { Sun, Moon, LogOut } from 'lucide-react';
@@ -88,8 +88,8 @@ const NotificationPanel = () => {
 
 const AccountModalContent = () => {
     const { address, disconnect } = useWallet();
-    const { settings } = useSettings();
-    const username = settings.username || (address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "User");
+    const { profile } = useProfile();
+    const username = profile.username || (address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "User");
 
     return (
         <div className="p-2">
@@ -103,7 +103,7 @@ const AccountModalContent = () => {
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center">
                         <Avatar className="w-28 h-28 border-4 border-background">
-                            <AvatarImage src={`https://api.dicebear.com/9.x/pixel-art/svg?seed=${settings.username || address}`} alt="User Avatar" />
+                            <AvatarImage src={`https://api.dicebear.com/9.x/pixel-art/svg?seed=${profile.username || address}`} alt="User Avatar" />
                             <AvatarFallback>{username.slice(0,2) || '??'}</AvatarFallback>
                         </Avatar>
                     </div>
@@ -126,18 +126,18 @@ const AccountModalContent = () => {
 
 const AccountPanel = () => {
     const { address } = useWallet();
-    const { settings } = useSettings();
+    const { profile } = useProfile();
 
     return (
         <Dialog>
             <DialogTrigger asChild>
                 <button className="flex-1 flex items-center gap-4 p-3 rounded-xl relative overflow-hidden hover:bg-accent text-muted-foreground">
                     <Avatar className="h-8 w-8 min-w-[2rem] border-2 border-border">
-                        <AvatarImage src={`https://api.dicebear.com/9.x/pixel-art/svg?seed=${settings.username || address}`} alt="User Avatar" />
+                        <AvatarImage src={`https://api.dicebear.com/9.x/pixel-art/svg?seed=${profile.username || address}`} alt="User Avatar" />
                         <AvatarFallback>{address?.slice(2,4) || '??'}</AvatarFallback>
                     </Avatar>
                     <div className="sidebar-text text-sm text-left">
-                        <p className="font-bold text-foreground font-display">{settings.username || `${address?.slice(0, 6)}...${address?.slice(-4)}`}</p>
+                        <p className="font-bold text-foreground font-display">{profile.username || `${address?.slice(0, 6)}...${address?.slice(-4)}`}</p>
                         <p className="text-xs">Manage Account</p>
                     </div>
                 </button>
@@ -197,7 +197,7 @@ export function Sidebar() {
                 <div className="h-10 w-10 min-w-[2.5rem] p-1.5 bg-foreground text-background flex items-center justify-center font-display font-bold text-xl rounded-2xl shadow-lg">
                     <Logo />
                 </div>
-                <span className="sidebar-text font-display font-bold text-lg tracking-tight text-foreground">INTUITION</span>
+                <span className="sidebar-text font-display font-bold text-lg tracking-tight text-foreground">Intuition BETs</span>
             </div>
 
             <nav className="flex-1 flex flex-col gap-2 py-6 px-3 overflow-y-auto no-scrollbar">

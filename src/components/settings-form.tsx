@@ -1,34 +1,27 @@
 
-
 'use client';
 
-import { useForm, Controller } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useSettings, defaultSettings } from '@/lib/state/settings';
+import { useProfile, defaultProfile } from '@/lib/state/profile';
 import { useToast } from '@/hooks/use-toast';
-import { useNotifications } from '@/lib/state/notifications';
-import { User, Bell, Trash2, Shield, Palette, Upload, Download, Moon, Sun, Camera, Lock, Twitter, Link as LinkIcon, Sliders, Save, Monitor, Smartphone, AlertOctagon, Check, Plus, LogOut, UserCog, ShieldCheck, QrCode, Wallet } from 'lucide-react';
+import { User, Bell, Trash2, Shield, Palette, Upload, Download, Moon, Sun, Camera, Lock, Twitter, Link as LinkIcon, Sliders, Save, Monitor, Smartphone, AlertOctagon, Check, Plus, LogOut, UserCog, ShieldCheck, QrCode, Wallet, Loader2 } from 'lucide-react';
 import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
-import { useAdmin } from '@/hooks/use-admin';
 import { useTheme } from 'next-themes';
 import { cn } from '@/lib/utils';
 import { useWallet } from '@/hooks/use-wallet';
-import QRCode from 'qrcode.react';
-import { toPng } from 'html-to-image';
 import { blockchainService } from '@/services/blockchain';
-import { UserStats } from '@/lib/types';
-import { Hex } from 'viem';
+import { UserStats, UserProfile } from '@/lib/types';
 import { Textarea } from '@/components/ui/textarea';
 import { AvatarSelectionDialog } from './profile/avatar-selection-dialog';
 import { getRank, calculateUserStats } from '@/lib/ranks';
+import { Address } from 'viem';
+import { avatarSeeds } from '@/components/profile/avatar-selection-dialog';
 
 
 const DossierCard = ({ user, stats }: { user: { name: string; address: string | undefined, avatarSeed: string }, stats: UserStats | null }) => {
     const cardRef = useRef<HTMLDivElement>(null);
-    const profileUrl = typeof window !== 'undefined' ? `${window.location.origin}/profile` : '';
-    const [isAvatarDialogOpen, setIsAvatarDialogOpen] = useState(false);
+    const profileUrl = typeof window !== 'undefined' ? `${window.location.origin}/profile/${user.address}` : '';
     
     const userRank = useMemo(() => getRank(stats?.trustScore ?? 0), [stats]);
     
@@ -90,8 +83,8 @@ const DossierCard = ({ user, stats }: { user: { name: string; address: string | 
                         <div className="relative w-full h-full rounded-full p-[3px] bg-gradient-to-br from-primary to-zinc-800">
                             <img src={`https://api.dicebear.com/9.x/pixel-art/svg?seed=${user.avatarSeed}`} alt="Profile" className="rounded-full bg-background w-full h-full object-cover border-4 border-background"/>
                         </div>
-                        <button onClick={() => setIsAvatarDialogOpen(true)} className="absolute bottom-0 right-0 w-8 h-8 bg-foreground text-background rounded-full flex items-center justify-center shadow-lg hover:bg-primary transition-colors border-2 border-background group/cam">
-                            <Camera className="w-4 h-4 group-hover/cam:rotate-12 transition-transform" />
+                        <button onClick={() => {}} disabled className="absolute bottom-0 right-0 w-8 h-8 bg-foreground text-background rounded-full flex items-center justify-center shadow-lg border-2 border-background cursor-not-allowed opacity-50">
+                            <Camera className="w-4 h-4" />
                         </button>
                     </div>
 
@@ -105,13 +98,12 @@ const DossierCard = ({ user, stats }: { user: { name: string; address: string | 
                         </div>
                         <div className="bg-background/40 p-4 rounded-2xl border border-border backdrop-blur-sm">
                             <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-1">Founded</p>
-                            <p className="text-lg md:text-xl font-display font-bold text-muted-foreground">Intuition</p>
+                            <p className="text-lg md:text-xl font-display font-bold text-muted-foreground">Intuition BETs</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-         <AvatarSelectionDialog isOpen={isAvatarDialogOpen} onOpenChange={setIsAvatarDialogOpen} />
         </>
     )
 }
@@ -123,20 +115,32 @@ const TabButton = ({ label, active, onClick }: { label: string, active: boolean,
 )
 
 export function SettingsForm() {
-  const { settings, setSettings } = useSettings();
-  const { clearAllNotifications } = useNotifications();
+  const { profile, isLoading: isProfileLoading, fetchProfile } = useProfile();
   const { toast } = useToast();
-  const { address } = useWallet();
-  const { isAdmin } = useAdmin();
+  const { address, walletClient } = useWallet();
 
   const [activeTab, setActiveTab] = useState('general');
-  const [username, setUsername] = useState(settings.username);
-  const [bio, setBio] = useState(settings.bio || '');
-  const [twitter, setTwitter] = useState(settings.twitter || '');
-  const [website, setWebsite] = useState(settings.website || '');
-
+  const [localProfile, setLocalProfile] = useState<UserProfile>(defaultProfile);
   const [stats, setStats] = useState<UserStats | null>(null);
   const [statsLoading, setStatsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isAvatarDialogOpen, setIsAvatarDialogOpen] = useState(false);
+
+
+  // When the on-chain profile loads, update our local form state
+  useEffect(() => {
+    if (profile) {
+      setLocalProfile(profile);
+    }
+  }, [profile]);
+  
+  const handleInputChange = (field: keyof UserProfile, value: string) => {
+    setLocalProfile(prev => ({ ...prev, [field]: value }));
+  };
+  
+  const handleAvatarSave = (newUsername: string) => {
+    setLocalProfile(prev => ({ ...prev, username: newUsername }));
+  }
 
   // Fetch user stats for the dossier
   const fetchUserStats = useCallback(async () => {
@@ -147,6 +151,11 @@ export function SettingsForm() {
     setStatsLoading(true);
     try {
         const allEvents = await blockchainService.getAllEvents();
+        if (allEvents.length === 0) {
+            setStats({ wins: 0, losses: 0, totalBets: 0, accuracy: 0, trustScore: 0 });
+            setStatsLoading(false);
+            return;
+        }
         const eventIds = allEvents.map(e => BigInt(e.id));
         
         if (eventIds.length === 0) {
@@ -154,7 +163,7 @@ export function SettingsForm() {
           return;
         }
 
-        const userBetsOnAllEvents = await blockchainService.getMultipleUserBets(eventIds, address);
+        const userBetsOnAllEvents = await blockchainService.getMultipleUserBets(eventIds, address as Address);
         const newStats = calculateUserStats(allEvents, userBetsOnAllEvents);
         setStats(newStats);
 
@@ -170,34 +179,36 @@ export function SettingsForm() {
   }, [fetchUserStats]);
 
 
-  useEffect(() => {
-    setUsername(settings.username);
-    setBio(settings.bio || '');
-    setTwitter(settings.twitter || '');
-    setWebsite(settings.website || '');
-  }, [settings]);
+  const handleSaveGeneral = async () => {
+    if (!walletClient || !address) {
+        toast({ title: "Wallet not connected", variant: "destructive" });
+        return;
+    }
 
-  const handleSaveGeneral = () => {
-    setSettings(prev => ({ ...prev, username, bio, twitter, website }));
-    toast({
-        title: "Identity Synchronized",
-        description: "Your general settings have been saved locally.",
-    });
+    setIsSaving(true);
+    try {
+        const txHash = await blockchainService.setProfile(walletClient, address, localProfile);
+        toast({
+            title: "Updating On-Chain Profile...",
+            description: "Your transaction has been submitted. Please wait for confirmation.",
+        });
+        await blockchainService.waitForTransaction(txHash);
+        await fetchProfile(); // Re-fetch the profile from the blockchain
+        toast({
+            title: "Identity Synchronized",
+            description: "Your on-chain profile has been updated.",
+        });
+    } catch(e: any) {
+        toast({
+            title: "Error Saving Profile",
+            description: e.message || "An unknown error occurred.",
+            variant: "destructive",
+        });
+    } finally {
+        setIsSaving(false);
+    }
   };
 
-  const handleNotificationChange = (key: keyof typeof settings.notifications, value: boolean) => {
-    setSettings(prev => ({
-        ...prev,
-        notifications: {
-            ...prev.notifications,
-            [key]: value
-        }
-    }));
-    toast({
-        title: "Protocol Updated",
-        description: `Notifications for this event are now ${value ? 'online' : 'offline'}.`
-    })
-  };
 
   const handleBurnProtocol = () => {
       toast({
@@ -210,17 +221,17 @@ export function SettingsForm() {
   return (
     <div className="flex flex-col xl:flex-row gap-8 items-start animate-slide-up">
         <div className="w-full xl:w-2/5 space-y-6">
-            <DossierCard user={{ name: settings.username, address, avatarSeed: settings.username || address || 'default' }} stats={stats} />
+            <DossierCard user={{ name: localProfile.username, address, avatarSeed: localProfile.username || address || 'default' }} stats={stats} />
              <div className="bg-card/60 dark:glass-panel p-6 rounded-[2rem] border backdrop-blur-md">
                 <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">Signal Nodes</h3>
                 <div className="space-y-3">
-                    <a href={settings.twitter ? `https://twitter.com/${settings.twitter}`: '#'} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-500 hover:bg-blue-500 hover:text-white transition-all active-press group">
+                    <a href={localProfile.twitter ? `https://twitter.com/${localProfile.twitter}`: '#'} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-500 hover:bg-blue-500 hover:text-white transition-all active-press group">
                         <Twitter className="w-4 h-4" />
-                        <span className="text-xs font-bold">{settings.twitter ? `@${settings.twitter}` : 'Not Set'}</span>
+                        <span className="text-xs font-bold">{localProfile.twitter ? `@${localProfile.twitter}` : 'Not Set'}</span>
                     </a>
-                    <a href={settings.website || '#'} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-secondary border border-border text-muted-foreground hover:text-foreground transition-all active-press">
+                    <a href={localProfile.website || '#'} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-secondary border border-border text-muted-foreground hover:text-foreground transition-all active-press">
                         <LinkIcon className="w-4 h-4" />
-                        <span className="text-xs font-bold">{settings.website || 'Not Set'}</span>
+                        <span className="text-xs font-bold">{localProfile.website || 'Not Set'}</span>
                     </a>
                 </div>
             </div>
@@ -230,27 +241,38 @@ export function SettingsForm() {
              <div className="p-1.5 rounded-2xl bg-card border flex flex-wrap gap-1 max-w-full">
                 <TabButton label="General" active={activeTab === 'general'} onClick={() => setActiveTab('general')} />
                 <TabButton label="Security" active={activeTab === 'security'} onClick={() => setActiveTab('security')} />
-                <TabButton label="Notifications" active={activeTab === 'notifications'} onClick={() => setActiveTab('notifications')} />
                 <TabButton label="API Keys" active={activeTab === 'api'} onClick={() => setActiveTab('api')} />
             </div>
 
             {activeTab === 'general' && (
                 <div className="bg-card/60 backdrop-blur-xl border border-border rounded-[2.5rem] p-6 md:p-8 space-y-8 relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-border to-transparent"></div>
+                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-border to-transparent"></div>
                     <div className="flex items-center justify-between border-b border-border pb-6">
                         <div>
                             <h2 className="text-xl font-display font-bold text-foreground flex items-center gap-2">
-                                <Sliders className="w-5 h-5 text-primary" /> Identity Configuration
+                                <Sliders className="w-5 h-5 text-primary" /> On-Chain Identity
                             </h2>
-                            <p className="text-xs text-muted-foreground mt-1">Define how the protocol perceives your signal.</p>
+                            <p className="text-xs text-muted-foreground mt-1">Configure your public-facing profile and identity. Changes require a transaction.</p>
                         </div>
                         <div className="flex items-center gap-3">
-                            <span className="text-[10px] font-mono text-muted-foreground hidden md:block">LAST SYNC: 2M AGO</span>
-                            <button onClick={handleSaveGeneral} className="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all shadow-[0_0_15px_rgba(16,185,129,0.2)]">
-                                <Save className="w-5 h-5" />
+                             <Button variant="outline" size="icon" className="w-10 h-10 rounded-full" onClick={() => setIsAvatarDialogOpen(true)}>
+                                <Camera className="w-5 h-5"/>
+                            </Button>
+                            <button onClick={handleSaveGeneral} disabled={isSaving || isProfileLoading} className="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all shadow-[0_0_15px_rgba(16,185,129,0.2)] disabled:opacity-50 disabled:cursor-not-allowed">
+                                {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
                             </button>
                         </div>
                     </div>
+                    {isProfileLoading ? (
+                        <div className="space-y-6">
+                            <div className="h-16 bg-secondary rounded-lg animate-pulse" />
+                            <div className="h-24 bg-secondary rounded-lg animate-pulse" />
+                            <div className="grid grid-cols-2 gap-4">
+                               <div className="h-16 bg-secondary rounded-lg animate-pulse" />
+                               <div className="h-16 bg-secondary rounded-lg animate-pulse" />
+                            </div>
+                        </div>
+                    ) : (
                     <div className="grid md:grid-cols-2 gap-6">
                         <div className="space-y-2 group">
                             <div className="flex justify-between">
@@ -258,7 +280,7 @@ export function SettingsForm() {
                                 <span className="text-[9px] text-emerald-500 font-mono hidden group-focus-within:block">EDITABLE</span>
                             </div>
                             <div className="relative input-glow rounded-xl transition-all bg-background/50 dark:bg-black/40 border border-border group-focus-within:bg-background dark:group-focus-within:bg-black/60">
-                                <Input type="text" value={username} onChange={(e) => setUsername(e.target.value)} className="w-full bg-transparent border-none rounded-xl px-4 py-3 text-foreground focus:outline-none font-medium font-mono" />
+                                <Input type="text" value={localProfile.username} onChange={(e) => handleInputChange('username', e.target.value)} className="w-full bg-transparent border-none rounded-xl px-4 py-3 text-foreground focus:outline-none font-medium font-mono" />
                             </div>
                         </div>
                         <div className="space-y-2 group">
@@ -274,11 +296,11 @@ export function SettingsForm() {
                          <div className="col-span-full space-y-2 group">
                             <div className="flex justify-between items-end">
                                 <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground group-focus-within:text-primary transition-colors">Manifesto (Bio)</label>
-                                <span className="text-[9px] font-mono text-muted-foreground">{bio.length} / 240 CHARS</span>
+                                <span className="text-[9px] font-mono text-muted-foreground">{localProfile.bio.length} / 256 CHARS</span>
                             </div>
                             <div className="relative input-glow rounded-xl transition-all bg-background/50 dark:bg-black/40 border border-border group-focus-within:bg-background dark:group-focus-within:bg-black/60">
                                 <div className="absolute top-0 left-0 w-1 h-full bg-primary rounded-l-xl opacity-0 group-focus-within:opacity-100 transition-opacity"></div>
-                                <Textarea rows={3} value={bio} onChange={e => setBio(e.target.value)} maxLength={240} className="w-full bg-transparent border-none rounded-xl px-4 py-3 text-foreground focus:outline-none text-sm leading-relaxed resize-none font-mono" />
+                                <Textarea rows={3} value={localProfile.bio} onChange={e => handleInputChange('bio', e.target.value)} maxLength={256} className="w-full bg-transparent border-none rounded-xl px-4 py-3 text-foreground focus:outline-none text-sm leading-relaxed resize-none font-mono" />
                             </div>
                         </div>
                         <div className="space-y-2 group">
@@ -287,7 +309,7 @@ export function SettingsForm() {
                             </div>
                             <div className="relative input-glow rounded-xl transition-all bg-background/50 dark:bg-black/40 border border-border group-focus-within:bg-background dark:group-focus-within:bg-black/60">
                                 <div className="absolute top-0 left-3 h-full flex items-center text-muted-foreground group-focus-within:text-primary">@</div>
-                                <Input type="text" value={twitter} onChange={(e) => setTwitter(e.target.value)} className="w-full bg-transparent border-none rounded-xl pl-8 pr-4 py-3 text-foreground focus:outline-none font-medium font-mono" />
+                                <Input type="text" value={localProfile.twitter} onChange={(e) => handleInputChange('twitter', e.target.value)} className="w-full bg-transparent border-none rounded-xl pl-8 pr-4 py-3 text-foreground focus:outline-none font-medium font-mono" />
                             </div>
                         </div>
                          <div className="space-y-2 group">
@@ -296,31 +318,12 @@ export function SettingsForm() {
                             </div>
                             <div className="relative input-glow rounded-xl transition-all bg-background/50 dark:bg-black/40 border border-border group-focus-within:bg-background dark:group-focus-within:bg-black/60">
                                  <LinkIcon className="absolute left-3 top-3.5 w-4 h-4 text-muted-foreground" />
-                                <Input type="text" value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://..." className="w-full bg-transparent border-none rounded-xl pl-9 pr-4 py-3 text-foreground focus:outline-none font-medium font-mono" />
+                                <Input type="text" value={localProfile.website} onChange={(e) => handleInputChange('website', e.target.value)} placeholder="https://..." className="w-full bg-transparent border-none rounded-xl pl-9 pr-4 py-3 text-foreground focus:outline-none font-medium font-mono" />
                             </div>
                         </div>
                     </div>
+                    )}
                 </div>
-            )}
-
-            {activeTab === 'notifications' && (
-                 <div className="bg-card/60 backdrop-blur-xl border border-border rounded-[2.5rem] p-8 space-y-6">
-                    <h2 className="text-xl font-display font-bold text-foreground flex items-center gap-2 border-b border-border pb-6">
-                        <Bell className="w-5 h-5 text-primary" /> Notification Feed
-                    </h2>
-                     <div className="flex items-center justify-between p-4 rounded-2xl bg-secondary border border-border">
-                        <p className="text-sm font-semibold text-foreground">Bet Placed Confirmation</p>
-                        <input type="checkbox" className="cyber-toggle" checked={settings.notifications.onBetPlaced} onChange={(e) => handleNotificationChange('onBetPlaced', e.target.checked)} />
-                    </div>
-                    <div className="flex items-center justify-between p-4 rounded-2xl bg-secondary border border-border">
-                        <p className="text-sm font-semibold text-foreground">Event Outcome Resolved</p>
-                        <input type="checkbox" className="cyber-toggle" checked={settings.notifications.onEventResolved} onChange={(e) => handleNotificationChange('onEventResolved', e.target.checked)} />
-                    </div>
-                    <div className="flex items-center justify-between p-4 rounded-2xl bg-secondary border border-border">
-                        <p className="text-sm font-semibold text-foreground">Winnings Claimed</p>
-                        <input type="checkbox" className="cyber-toggle" checked={settings.notifications.onWinningsClaimed} onChange={(e) => handleNotificationChange('onWinningsClaimed', e.target.checked)} />
-                    </div>
-                 </div>
             )}
 
             {activeTab === 'security' && (
@@ -367,8 +370,8 @@ export function SettingsForm() {
                     <p>API Key management is coming soon.</p>
                 </div>
             )}
-
         </div>
+        <AvatarSelectionDialog isOpen={isAvatarDialogOpen} onOpenChange={setIsAvatarDialogOpen} onSave={handleAvatarSave} />
     </div>
   );
 }

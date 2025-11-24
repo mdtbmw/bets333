@@ -31,7 +31,7 @@ export function PageHeader({ title, description }: PageHeaderProps) {
     }
 
     return (
-        <div className="pb-0 mb-0">
+        <div className="pb-8 mb-8 border-b">
             <div className="flex items-center gap-4">
                 <div>
                     <h1 className="text-3xl md:text-4xl font-bold tracking-tighter text-foreground mb-2">

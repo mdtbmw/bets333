@@ -42,17 +42,5 @@ export const achievements: Achievement[] = [
     criteria: (stats: UserStats) => stats.accuracy >= 75 && stats.totalBets >= 10,
     progress: (stats: UserStats) => stats.totalBets < 10 ? stats.totalBets : stats.accuracy,
     goal: (stats: UserStats | null) => (stats && stats.totalBets < 10) ? 10 : 75,
-   },
-   {
-    id: "whale_slayer",
-    name: "Whale Slayer",
-    description: "Win > $50k",
-    icon: "Sword",
-    image: "",
-    criteria: (stats: UserStats) => false, // This would require tracking winnings
-    progress: (stats: UserStats) => 0,
-    goal: () => 50000,
    }
 ];
-
-    

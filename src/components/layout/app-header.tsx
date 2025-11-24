@@ -5,7 +5,7 @@ import { useWallet } from '@/hooks/use-wallet';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { DynamicIcon } from '@/lib/icons';
 import Link from 'next/link';
-import { useSettings } from '@/lib/state/settings';
+import { useProfile } from '@/lib/state/profile';
 import { Logo } from '../ui/logo';
 import { usePathname, useRouter } from 'next/navigation';
 import { Button } from '../ui/button';
@@ -30,6 +30,7 @@ import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { useHeaderState } from '@/lib/state/header';
 import { UserProfileStats } from '../profile/user-profile-stats';
 import { navLinks } from '@/lib/nav-links';
+import { Marquee } from '../ui/marquee';
 
 const NON_ROOT_PATHS = ['/event', '/admin', '/create-event'];
 
@@ -120,8 +121,8 @@ const NotificationPanelContent = () => {
 
 const AccountModalContent = () => {
     const { address, disconnect } = useWallet();
-    const { settings } = useSettings();
-    const username = settings.username || (address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "User");
+    const { profile } = useProfile();
+    const username = profile.username || (address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "User");
 
     return (
         <div className="p-2">
@@ -135,7 +136,7 @@ const AccountModalContent = () => {
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center">
                         <Avatar className="w-28 h-28 border-4 border-background">
-                            <AvatarImage src={`https://api.dicebear.com/9.x/pixel-art/svg?seed=${settings.username || address}`} alt="User Avatar" />
+                            <AvatarImage src={`https://api.dicebear.com/9.x/pixel-art/svg?seed=${profile.username || address}`} alt="User Avatar" />
                             <AvatarFallback>{username.slice(0,2) || '??'}</AvatarFallback>
                         </Avatar>
                     </div>
@@ -160,7 +161,7 @@ export function AppHeader() {
   const router = useRouter();
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { settings } = useSettings();
+  const { profile } = useProfile();
   const { address, disconnect } = useWallet();
 
   const { markAllAsRead, unreadCount } = useNotifications();
@@ -216,14 +217,20 @@ export function AppHeader() {
             </div>
 
             {/* Centered Content */}
-            <div className="absolute left-1/2 -translate-x-1/2 text-center">
+            <div className="absolute left-1/2 -translate-x-1/2 text-center w-[60%]">
               {isInnerPage && title ? (
                 <div>
-                    <h1 className="text-base font-bold text-foreground truncate max-w-[200px]">{title}</h1>
-                    {subtitle && <p className="text-xs text-muted-foreground truncate max-w-[200px]">{subtitle}</p>}
+                    <h1 className="text-base font-bold text-foreground truncate">{title}</h1>
+                    {subtitle && (
+                      <div className="w-full max-w-[220px] mx-auto">
+                        <Marquee pauseOnHover className="text-xs text-muted-foreground">
+                          {subtitle}
+                        </Marquee>
+                      </div>
+                    )}
                 </div>
               ) : (
-                <Link href="/" className="flex items-center gap-3">
+                <Link href="/" className="flex items-center justify-center gap-3">
                     <Logo className="h-8 w-8 text-foreground" />
                 </Link>
               )}
@@ -243,7 +250,7 @@ export function AppHeader() {
                     <DialogTrigger asChild>
                          <button className="h-9 w-9 rounded-full p-0.5 cursor-pointer">
                             <Avatar className="h-full w-full">
-                                <AvatarImage src={`https://api.dicebear.com/9.x/pixel-art/svg?seed=${settings.username || address}`} alt="User Avatar" />
+                                <AvatarImage src={`https://api.dicebear.com/9.x/pixel-art/svg?seed=${profile.username || address}`} alt="User Avatar" />
                                 <AvatarFallback>{address?.slice(2,4) || '??'}</AvatarFallback>
                             </Avatar>
                         </button>

@@ -12,13 +12,13 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent } from "@/components/ui/card";
 import { DynamicIcon } from "@/lib/icons";
 import { blockchainService } from "@/services/blockchain";
-import type { UserStats, Achievement } from "@/lib/types";
+import type { UserStats, Achievement, Event } from "@/lib/types";
 import { achievements } from "@/lib/achievements";
 import { useNotifications } from '@/lib/state/notifications';
 import { cn } from "@/lib/utils";
 import { useAuthGuard } from "@/hooks/use-auth-guard";
-import { useSettings } from "@/lib/state/settings";
-import { formatEther } from "viem";
+import { useProfile } from '@/lib/state/profile';
+import { formatEther, Hex } from "viem";
 import { UserIDCard } from "@/components/profile/user-id-card";
 import { ranks, getRank, calculateUserStats } from "@/lib/ranks";
 
@@ -39,21 +39,18 @@ const AchievementCard = ({ achievement, userStats }: { achievement: Achievement,
 
     const iconColor = useMemo(() => {
         if (achievement.name.includes("Genesis")) return "text-gold-400";
-        if (achievement.name.includes("Slayer")) return "text-emerald-400";
         if (achievement.name.includes("Oracle")) return "text-purple-400";
         return "text-blue-400";
     }, [achievement.name]);
 
     const borderColor = useMemo(() => {
         if (achievement.name.includes("Genesis")) return "border-gold-500/30 hover:border-gold-500";
-        if (achievement.name.includes("Slayer")) return "border-emerald-500/30 hover:border-emerald-500";
         if (achievement.name.includes("Oracle")) return "border-purple-500/30 hover:border-purple-500";
         return "border-blue-500/30 hover:border-blue-500";
     }, [achievement.name]);
     
      const bgColor = useMemo(() => {
         if (achievement.name.includes("Genesis")) return "bg-gold-500/5";
-        if (achievement.name.includes("Slayer")) return "bg-emerald-500/5";
         if (achievement.name.includes("Oracle")) return "bg-purple-500/5";
         return "bg-blue-500/5";
     }, [achievement.name]);
@@ -129,13 +126,13 @@ const PathToApex = ({ trustScore }: { trustScore: number }) => {
 export default function AchievementsPage() {
   const { isLoading: isAuthLoading } = useAuthGuard();
   const { address } = useWallet();
-  const { settings } = useSettings();
+  const { profile } = useProfile();
   const [stats, setStats] = useState<UserStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { addNotification } = useNotifications();
 
-  const username = useMemo(() => settings.username || (address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "User"), [address, settings.username]);
+  const username = useMemo(() => profile.username || (address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "User"), [address, profile.username]);
   
   const fetchUserStats = useCallback(async () => {
     if (!address) {
@@ -145,7 +142,6 @@ export default function AchievementsPage() {
     setLoading(true);
     setError(null);
     try {
-        blockchainService.clearCache();
         const allEvents = await blockchainService.getAllEvents();
         if (allEvents.length === 0) {
             setStats({ wins: 0, losses: 0, totalBets: 0, accuracy: 0, trustScore: 0 });
@@ -156,7 +152,6 @@ export default function AchievementsPage() {
         const eventIds = allEvents.map(e => BigInt(e.id));
         
         let userBetsOnAllEvents: any[] = [];
-
         if (eventIds.length > 0) {
             userBetsOnAllEvents = await blockchainService.getMultipleUserBets(eventIds, address);
         }
@@ -164,7 +159,7 @@ export default function AchievementsPage() {
         const newStats = calculateUserStats(allEvents, userBetsOnAllEvents);
         
         setStats(prevStats => {
-            if (prevStats) {
+            if (prevStats && newStats.totalBets > prevStats.totalBets) { // Only notify if there are new bets
                 achievements.forEach(ach => {
                     const wasUnlocked = ach.criteria(prevStats);
                     const isNowUnlocked = ach.criteria(newStats);
@@ -200,6 +195,7 @@ export default function AchievementsPage() {
   }, [isAuthLoading, address, fetchUserStats]);
   
   const pageLoading = isAuthLoading || (loading && !stats);
+  const unlockedAchievements = useMemo(() => achievements.filter(a => stats && a.criteria(stats)), [stats]);
 
   if (pageLoading) {
     return (
@@ -208,7 +204,7 @@ export default function AchievementsPage() {
                 title="Artifacts"
                 description="Milestones that mark your prediction journey."
             />
-             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
                 {Array.from({length: 6}).map((_, i) => (
                     <Skeleton key={i} className="aspect-square w-full rounded-[2rem]" />
                 ))}
@@ -219,20 +215,25 @@ export default function AchievementsPage() {
 
   return (
     <div className="space-y-12">
-        <PageHeader title="Artifacts" description="Milestones marking your prediction journey." />
-        <div className="animate-slide-up" style={{ animationDelay: '100ms' }}>
-            <div className="flex items-center justify-between mb-8">
-                <h2 className="font-display text-2xl font-bold text-foreground">Artifacts</h2>
-                <div className="flex gap-2">
-                     <span className="text-xs text-muted-foreground bg-card px-3 py-1.5 rounded-full border border-border">{achievements.filter(a => stats && a.criteria(stats)).length} / {achievements.length} Unlocked</span>
-                </div>
-            </div>
+        <div className="flex flex-col xl:flex-row-reverse gap-8 items-start">
+             <UserIDCard user={{name: username, address: address}} stats={stats}/>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {achievements.map((ach) => (
-                    <AchievementCard key={ach.id} achievement={ach} userStats={stats} />
-                ))}
-            </div>
+             <div className="flex-1 w-full">
+                <div className="animate-slide-up" style={{ animationDelay: '100ms' }}>
+                    <div className="flex items-center justify-between mb-8">
+                        <PageHeader title="Artifacts" description="Milestones marking your prediction journey." />
+                        <div className="flex gap-2">
+                             <span className="text-xs text-muted-foreground bg-card px-3 py-1.5 rounded-full border border-border">{unlockedAchievements.length} / {achievements.length} Unlocked</span>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                        {achievements.map((ach) => (
+                            <AchievementCard key={ach.id} achievement={ach} userStats={stats} />
+                        ))}
+                    </div>
+                </div>
+             </div>
         </div>
 
         <PathToApex trustScore={stats?.trustScore ?? 0} />

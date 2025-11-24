@@ -59,7 +59,7 @@ export function UserIDCard({ user, stats }: UserIDCardProps) {
 
     const trustScore = stats?.trustScore ?? 0;
     const userRank = useMemo(() => getRank(trustScore), [trustScore]);
-    const profileUrl = typeof window !== 'undefined' ? `${window.location.origin}/achievements` : '';
+    const profileUrl = typeof window !== 'undefined' ? `${window.location.origin}/profile/${user.address}` : '';
     
     const generateImage = useCallback(async (output: 'download' | 'share') => {
         if (!cardRef.current) return;
@@ -68,17 +68,18 @@ export function UserIDCard({ user, stats }: UserIDCardProps) {
         if (buttons) (buttons as HTMLElement).style.display = 'none';
         
         try {
+            const dataUrl = await toPng(cardRef.current, { cacheBust: true, pixelRatio: 2 });
             if (output === 'download') {
-                const dataUrl = await toPng(cardRef.current, { cacheBust: true });
                 const link = document.createElement('a');
-                link.download = 'Intuition_ID.png';
+                link.download = 'Intuition_BETs_ID.png';
                 link.href = dataUrl;
                 link.click();
             } else if (output === 'share' && navigator.share) {
-                const blob = await toPng(cardRef.current, { cacheBust: true, pixelRatio: 2 });
-                const file = new File([blob], 'Intuition_ID.png', { type: 'image/png' });
+                const response = await fetch(dataUrl);
+                const blob = await response.blob();
+                const file = new File([blob], 'Intuition_BETs_ID.png', { type: 'image/png' });
                 const shareData = {
-                    title: 'My Intuition ID',
+                    title: 'My Intuition BETs ID',
                     text: `Check out my stats on Intuition BETs! My Trust Score is ${trustScore.toFixed(1)}.`,
                     files: [file]
                 };
@@ -88,7 +89,7 @@ export function UserIDCard({ user, stats }: UserIDCardProps) {
                 } else {
                      toast({ title: "Share Not Supported", description: "Your browser cannot share this type of file." });
                 }
-            } else {
+            } else if (output === 'share') {
                  toast({ title: "Share Not Supported", description: "Your browser does not support the Web Share API." });
             }
         } catch (err: any) {
@@ -104,7 +105,7 @@ export function UserIDCard({ user, stats }: UserIDCardProps) {
              if (buttons) (buttons as HTMLElement).style.display = 'flex';
         }
 
-    }, [trustScore, toast]);
+    }, [trustScore, toast, user.address]);
 
 
     return (
@@ -122,7 +123,7 @@ export function UserIDCard({ user, stats }: UserIDCardProps) {
                                 <Logo/>
                             </div>
                             <div>
-                                <p className="text-[10px] text-zinc-400 uppercase tracking-widest font-bold">Intuition ID</p>
+                                <p className="text-[10px] text-zinc-400 uppercase tracking-widest font-bold">Intuition BETs ID</p>
                                 <p className="text-xs font-mono text-gold-500">INT-{(user.address || "0000").slice(2, 6).toUpperCase()}-X</p>
                             </div>
                         </div>

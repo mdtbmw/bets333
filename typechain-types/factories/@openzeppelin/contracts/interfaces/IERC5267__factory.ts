@@ -10,12 +10,6 @@ import type {
 
 const _abi = [
   {
-    anonymous: false,
-    inputs: [],
-    name: "EIP712DomainChanged",
-    type: "event",
-  },
-  {
     inputs: [],
     name: "eip712Domain",
     outputs: [

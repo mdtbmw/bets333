@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { Event } from '@/lib/types';
@@ -8,6 +9,7 @@ import { DynamicIcon } from '@/lib/icons';
 import { useRouter } from 'next/navigation';
 import { useCountdown } from '@/hooks/use-countdown';
 import { useAdmin } from '@/hooks/use-admin';
+import { cn } from '@/lib/utils';
 
 export function EventCard({ event }: { event: Event }) {
   const categoryDetails = placeholderData.categories.find(c => c.name === event.category);
@@ -39,7 +41,7 @@ export function EventCard({ event }: { event: Event }) {
             <div className="flex items-center gap-2 bg-black/60 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-full shadow-lg">
               <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
               <span className="text-xs font-mono font-medium text-white tracking-tight">
-                {String(timeLeft.hours + (timeLeft.days * 24)).padStart(2, '0')}:
+                {String(timeLeft.days * 24 + timeLeft.hours).padStart(2, '0')}:
                 {String(timeLeft.minutes).padStart(2, '0')}:
                 {String(timeLeft.seconds).padStart(2, '0')}
               </span>
@@ -58,7 +60,7 @@ export function EventCard({ event }: { event: Event }) {
             
             <div className="relative h-2 w-full bg-black/40 rounded-full overflow-hidden mb-3">
               <div 
-                className="absolute top-0 bottom-0 left-0 bg-gradient-to-r from-emerald-600 to-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.6)]" 
+                className="absolute top-0 bottom-0 left-0 bg-gradient-to-r from-emerald-600 to-emerald-400 bar-shimmer" 
                 style={{width: `${yesPercentage}%`}}
               ></div>
             </div>
@@ -78,14 +80,14 @@ export function EventCard({ event }: { event: Event }) {
 
 export function SuggestMarketCard() {
     const router = useRouter();
-    const { isAdmin, loading } = useAdmin();
+    const { isAdmin, loading: adminLoading } = useAdmin();
 
-    if (loading || !isAdmin) {
+    if (adminLoading || !isAdmin) {
         return null;
     }
 
     return (
-        <button onClick={() => router.push('/admin?tab=scout')} className="rounded-[2.5rem] border-2 border-dashed border-zinc-700 dark:border-white/10 p-6 flex flex-col items-center justify-center text-center hover:bg-zinc-800/50 dark:hover:bg-white/[0.02] hover:border-gold-500/30 transition-all cursor-pointer active-press h-[340px] bg-white/50 dark:bg-black/20 group">
+        <button onClick={() => router.push('/admin?tab=scout')} className="rounded-[2.5rem] border-2 border-dashed border-zinc-700 dark:border-white/10 p-6 flex flex-col items-center justify-center text-center hover:bg-zinc-800/50 dark:hover:bg-white/[0.02] hover:border-gold-500/30 transition-all cursor-pointer active-press h-[340px] bg-white/50 dark:bg-black/20 group animate-float">
             <div className="w-16 h-16 rounded-full bg-zinc-800 dark:bg-white/5 flex items-center justify-center mb-5 text-zinc-500 group-hover:bg-gold-500 group-hover:text-black transition-all duration-500 shadow-xl ring-1 ring-inset ring-white/10">
                 <DynamicIcon name="Lightbulb" className="w-8 h-8" strokeWidth="1.5" />
             </div>

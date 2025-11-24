@@ -23,7 +23,8 @@ createWeb3Modal({
     '--w3m-accent': 'hsl(var(--primary))',
     '--w3m-border-radius-master': '1rem',
     '--w3m-font-family': 'var(--font-space-grotesk)',
-  }
+  },
+  defaultChain: activeChain,
 });
 
 
@@ -41,4 +42,3 @@ export function Web3Provider({
     </WagmiProvider>
   );
 }
-

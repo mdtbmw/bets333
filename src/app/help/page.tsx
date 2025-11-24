@@ -33,7 +33,7 @@ const faqs = [
     },
     {
         question: "How does the platform earn revenue?",
-        answer: "The platform's business model is transparent and self-sustaining. We collect a small 3% fee from the winnings of each Signal. This fee is automatically sent to a secure treasury wallet and is used to fund operational costs, security audits, and future development, ensuring the long-term health and decentralization of the ecosystem."
+        answer: "The Intuition BETs business model is transparent and self-sustaining. We collect a small 3% fee from the winnings of each Signal. This fee is automatically sent to a secure treasury wallet and is used to fund operational costs, security audits, and future development, ensuring the long-term health and decentralization of the ecosystem."
     },
     {
         question: "Where does the event data come from?",

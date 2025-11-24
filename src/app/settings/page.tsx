@@ -1,3 +1,4 @@
+
 'use client';
 
 import { PageHeader } from "@/components/layout/page-header";
@@ -13,11 +14,12 @@ export default function SettingsPage() {
       <ParticleBackground />
       <div className="relative z-10 space-y-8">
           <PageHeader
-            title="Identity"
-            description="Define how the protocol perceives your signal."
+            title="Identity Configuration"
+            description="Define how the Intuition BETs protocol perceives your on-chain identity."
           />
         <SettingsForm />
       </div>
     </>
   );
 }
+

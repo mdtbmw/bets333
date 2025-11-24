@@ -1,4 +1,3 @@
-
 const hre = require("hardhat");
 require('dotenv').config();
 
@@ -14,29 +13,29 @@ async function main() {
   }
 
   console.log("\n====================================================================");
-  console.log("   🚀  Starting Deployment of IntuitionBettingOracle...  🚀");
+  console.log("   🚀  Starting Full Contract Suite Deployment...  🚀");
   console.log("====================================================================");
   console.log(`\n   Deployer Account: ${ownerAddress}`);
-  console.log(`   Treasury Address: ${treasuryAddress}`);
-  console.log(`   Platform Fee: ${platformFeeBps} BPS (${parseInt(platformFeeBps) / 100}%)`);
-  console.log("\n   Contract factory loading...");
+
+  // --- Deploy IntuitionBettingOracle ---
+  console.log("\n   Deploying IntuitionBettingOracle...");
+  console.log(`     - Treasury: ${treasuryAddress}`);
+  console.log(`     - Platform Fee: ${platformFeeBps} BPS`);
 
   const IntuitionBettingOracle = await hre.ethers.getContractFactory("IntuitionBettingOracle");
-  console.log("   Contract factory loaded. Deploying with constructor arguments...");
+  const bettingContract = await IntuitionBettingOracle.deploy(ownerAddress, treasuryAddress, platformFeeBps);
+  await bettingContract.waitForDeployment();
+  const bettingContractAddress = await bettingContract.getAddress();
+  
+  console.log(`   ✅  IntuitionBettingOracle deployed to: ${bettingContractAddress}`);
 
-  const contract = await IntuitionBettingOracle.deploy(ownerAddress, treasuryAddress, platformFeeBps);
-
-  await contract.waitForDeployment();
-
-  const contractAddress = await contract.getAddress();
 
   console.log(`\n====================================================================`);
-  console.log(`   ✅  IntuitionBettingOracle Deployed Successfully! ✅`);
+  console.log(`   🎉  All Contracts Deployed Successfully! 🎉`);
   console.log(`====================================================================\n`);
-  console.log(`   Contract Address: ${contractAddress}\n`);
-  console.log(`   Action Required: Copy this address and paste it into your`);
-  console.log(`   .env file as the value for NEXT_PUBLIC_INTUITION_BETTING_ADDRESS.`);
-  console.log(`\n====================================================================\n`);
+  console.log("Please update your .env file with these addresses:\n");
+  // The final lines of output MUST be the addresses for scripts to capture them.
+  console.log(`NEXT_PUBLIC_INTUITION_BETTING_ADDRESS=${bettingContractAddress}`);
 }
 
 main().catch((error) => {

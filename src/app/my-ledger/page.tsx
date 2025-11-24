@@ -1,3 +1,4 @@
+
 'use client';
 
 import { PageHeader } from "@/components/layout/page-header";
@@ -17,9 +18,9 @@ export default function MyLedgerPage() {
               description="Track your active signals and review your historical performance."
             />
             <div className="space-y-4">
-                <Skeleton className="h-32 w-full rounded-2xl" />
-                <Skeleton className="h-32 w-full rounded-2xl" />
-                <Skeleton className="h-32 w-full rounded-2xl" />
+                <Skeleton className="h-40 w-full rounded-2xl" />
+                <Skeleton className="h-40 w-full rounded-2xl" />
+                <Skeleton className="h-40 w-full rounded-2xl" />
             </div>
         </div>
     )

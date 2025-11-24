@@ -227,10 +227,10 @@ export function CreateEventForm({ categories, onSuccess, isSuccess, lastEventId,
                       {categories.length === 0 ? (
                         <Skeleton className="h-10 w-full" />
                       ) : (
-                      <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value} disabled={categories.length === 0}>
+                      <Select onValueChange={field.onChange} value={field.value} disabled={categories.length === 0}>
                         <FormControl>
                           <SelectTrigger className="input-glow">
-                            <SelectValue placeholder={categories.length > 0 ? "Select a signal category" : "No categories available"} />
+                            <SelectValue placeholder={categories.length > 0 ? "Select a signal category" : "Loading categories..."} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>

@@ -27,6 +27,7 @@ export function DashboardSearch({ searchTerm, setSearchTerm }: DashboardSearchPr
     let timeoutId: NodeJS.Timeout;
 
     function typewriter() {
+      if (!inputRef.current) return;
       const fullText = placeholders[currentPlaceholderIndex];
       if (localIsDeleting) {
         setPlaceholder(current => current.slice(0, -1));

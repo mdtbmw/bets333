@@ -25,7 +25,6 @@ export type Event = {
   };
   totalPool: number;
   participants: Hex[];
-  startDate: Date | null;
   bettingStopDate: Date | null;
   resolutionDate: Date | null;
   winningOutcome?: BetOutcome;
@@ -84,7 +83,7 @@ export type Achievement = {
 }
 
 export type NotificationVariant = "default" | "success" | "destructive";
-export type NotificationCategory = 'onBetPlaced' | 'onEventResolved' | 'onWinningsClaimed';
+export type NotificationCategory = 'onBetPlaced' | 'onEventResolved' | 'onWinningsClaimed' | 'onProfileUpdated' | 'general';
 
 export type NotificationType = {
   id: string;
@@ -106,4 +105,9 @@ export interface UserStats {
     trustScore: number;
 }
 
-    
+export interface UserProfile {
+  username: string;
+  bio: string;
+  twitter: string;
+  website: string;
+}
