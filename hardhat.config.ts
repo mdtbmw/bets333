@@ -33,6 +33,10 @@ const config: HardhatUserConfig = {
       accounts: [deployerPrivateKey],
     },
   } : {},
+  typechain: {
+    outDir: 'typechain-types',
+    target: 'ethers-v6',
+  },
 };
 
 export default config;
