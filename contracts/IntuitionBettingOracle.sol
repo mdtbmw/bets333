@@ -1,10 +1,14 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.24;
+pragma solidity 0.8.24;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 contract IntuitionBettingOracle is Ownable, ReentrancyGuard {
+
+    enum EventStatus { Open, Closed, Finished, Canceled }
+    enum Outcome { None, YES, NO }
+
     struct EventData {
         uint256 id;
         string question;
@@ -26,16 +30,13 @@ contract IntuitionBettingOracle is Ownable, ReentrancyGuard {
         uint256 noAmount;
         bool claimed;
     }
-    
-    enum EventStatus { Open, Closed, Finished, Canceled }
-    enum Outcome { None, YES, NO }
 
-    uint256 public nextEventId;
     mapping(uint256 => EventData) public events;
     mapping(uint256 => mapping(address => Bet)) public userBets;
+    uint256 public nextEventId;
 
     address public treasury;
-    uint256 public platformFeeBps; // Basis points, e.g., 300 for 3%
+    uint256 public platformFeeBps; // Fee in basis points (e.g., 300 for 3%)
 
     event EventCreated(
         uint256 indexed id,
@@ -48,18 +49,25 @@ contract IntuitionBettingOracle is Ownable, ReentrancyGuard {
         uint256 minStake,
         uint256 maxStake
     );
-    event BetPlaced(uint256 indexed eventId, address indexed user, bool outcome, uint256 amount);
+
+    event BetPlaced(
+        uint256 indexed eventId,
+        address indexed user,
+        bool outcome, // true for YES, false for NO
+        uint256 amount
+    );
+    
     event EventResolved(uint256 indexed eventId, Outcome winningOutcome);
     event EventCanceled(uint256 indexed eventId);
     event WinningsClaimed(uint256 indexed eventId, address indexed user, uint256 amount);
 
+
     constructor(address _initialOwner, address _treasury, uint256 _platformFeeBps) Ownable(_initialOwner) {
         treasury = _treasury;
         platformFeeBps = _platformFeeBps;
-        nextEventId = 1; // Start with ID 1
     }
 
-    function _createEvent(
+    function createEvent(
         string memory q,
         string memory desc,
         string memory cat,
@@ -68,10 +76,12 @@ contract IntuitionBettingOracle is Ownable, ReentrancyGuard {
         uint256 resolution,
         uint256 minStake,
         uint256 maxStake
-    ) internal {
-        uint256 id = nextEventId++;
-        events[id] = EventData({
-            id: id,
+    ) external onlyOwner {
+        require(bettingStop < resolution, "Betting must stop before resolution");
+        require(minStake < maxStake, "Min stake must be less than max stake");
+
+        events[nextEventId] = EventData({
+            id: nextEventId,
             question: q,
             description: desc,
             category: cat,
@@ -85,119 +95,112 @@ contract IntuitionBettingOracle is Ownable, ReentrancyGuard {
             status: EventStatus.Open,
             winningOutcome: Outcome.None
         });
-        emit EventCreated(id, q, desc, cat, img, bettingStop, resolution, minStake, maxStake);
-    }
-    
-    function createEvent(
-        string memory q,
-        string memory desc,
-        string memory cat,
-        string memory img,
-        uint256 bettingStop,
-        uint256 resolution,
-        uint256 minStake,
-        uint256 maxStake
-    ) public onlyOwner {
-        _createEvent(q, desc, cat, img, bettingStop, resolution, minStake, maxStake);
+
+        emit EventCreated(nextEventId, q, desc, cat, img, bettingStop, resolution, minStake, maxStake);
+        nextEventId++;
     }
 
-    function placeBet(uint256 id, bool outcome) public payable nonReentrant {
-        EventData storage eventData = events[id];
-        require(eventData.status == EventStatus.Open, "Betting is not open");
-        require(block.timestamp < eventData.bettingStopDate, "Betting has closed");
-        require(msg.value >= eventData.minStake, "Stake is below minimum");
-        require(msg.value <= eventData.maxStake, "Stake is above maximum");
+    function placeBet(uint256 id, bool outcome) external payable nonReentrant {
+        EventData storage currentEvent = events[id];
+        require(currentEvent.status == EventStatus.Open, "Event not open for betting");
+        require(block.timestamp < currentEvent.bettingStopDate, "Betting has closed");
+        require(msg.value >= currentEvent.minStake, "Stake is below minimum");
+        require(msg.value <= currentEvent.maxStake, "Stake is above maximum");
 
-        Bet storage betInfo = userBets[id][msg.sender];
-        if (outcome) { // Betting on YES
-            betInfo.yesAmount += msg.value;
-            eventData.yesPool += msg.value;
-        } else { // Betting on NO
-            betInfo.noAmount += msg.value;
-            eventData.noPool += msg.value;
+        Bet storage bet = userBets[id][msg.sender];
+        
+        if (outcome) { // Bet on YES
+            bet.yesAmount += msg.value;
+            currentEvent.yesPool += msg.value;
+        } else { // Bet on NO
+            bet.noAmount += msg.value;
+            currentEvent.noPool += msg.value;
         }
 
         emit BetPlaced(id, msg.sender, outcome, msg.value);
     }
+    
+    function resolveEvent(uint256 id, bool yesWins) external onlyOwner {
+        EventData storage currentEvent = events[id];
+        require(currentEvent.status != EventStatus.Finished && currentEvent.status != EventStatus.Canceled, "Event already concluded");
+        
+        currentEvent.status = EventStatus.Finished;
+        currentEvent.winningOutcome = yesWins ? Outcome.YES : Outcome.NO;
 
-    function resolveEvent(uint256 id, bool yesWins) public onlyOwner {
-        EventData storage eventData = events[id];
-        require(eventData.status == EventStatus.Open || eventData.status == EventStatus.Closed, "Event cannot be resolved");
-        eventData.status = EventStatus.Finished;
-        eventData.winningOutcome = yesWins ? Outcome.YES : Outcome.NO;
-        emit EventResolved(id, eventData.winningOutcome);
+        emit EventResolved(id, currentEvent.winningOutcome);
     }
 
-    function cancelEvent(uint256 id) public onlyOwner {
-        EventData storage eventData = events[id];
-        require(eventData.status == EventStatus.Open, "Can only cancel open events");
-        eventData.status = EventStatus.Canceled;
+    function cancelEvent(uint256 id) external onlyOwner {
+        EventData storage currentEvent = events[id];
+        require(currentEvent.status == EventStatus.Open, "Can only cancel open events");
+        currentEvent.status = EventStatus.Canceled;
         emit EventCanceled(id);
     }
 
-    function claim(uint256 id) public nonReentrant {
-        EventData storage eventData = events[id];
-        Bet storage betInfo = userBets[id][msg.sender];
-        require(!betInfo.claimed, "Winnings already claimed");
+    function claim(uint256 id) external nonReentrant {
+        EventData storage currentEvent = events[id];
+        Bet storage bet = userBets[id][msg.sender];
+        require(!bet.claimed, "Winnings already claimed");
 
         uint256 payout = 0;
-        if (eventData.status == EventStatus.Finished) {
-            uint256 totalPool = eventData.yesPool + eventData.noPool;
-            if (eventData.winningOutcome == Outcome.YES && betInfo.yesAmount > 0) {
-                payout = (betInfo.yesAmount * totalPool) / eventData.yesPool;
-            } else if (eventData.winningOutcome == Outcome.NO && betInfo.noAmount > 0) {
-                payout = (betInfo.noAmount * totalPool) / eventData.noPool;
+        if (currentEvent.status == EventStatus.Finished) {
+            uint256 totalPool = currentEvent.yesPool + currentEvent.noPool;
+            if (totalPool == 0) {
+                 bet.claimed = true; // Nothing to claim
+                 return;
             }
-        } else if (eventData.status == EventStatus.Canceled) {
-            payout = betInfo.yesAmount + betInfo.noAmount;
+
+            if (currentEvent.winningOutcome == Outcome.YES && bet.yesAmount > 0) {
+                uint256 fee = (totalPool * platformFeeBps) / 10000;
+                payout = (bet.yesAmount * (totalPool - fee)) / currentEvent.yesPool;
+            } else if (currentEvent.winningOutcome == Outcome.NO && bet.noAmount > 0) {
+                uint256 fee = (totalPool * platformFeeBps) / 10000;
+                payout = (bet.noAmount * (totalPool - fee)) / currentEvent.noPool;
+            }
+        } else if (currentEvent.status == EventStatus.Canceled) {
+            payout = bet.yesAmount + bet.noAmount;
+        } else {
+            revert("Event not resolved or canceled");
         }
 
-        require(payout > 0, "No winnings to claim");
-        betInfo.claimed = true;
-        
-        uint256 fee = 0;
-        // only charge fee on winnings, not on refunds
-        if (eventData.status == EventStatus.Finished) {
-           fee = (payout * platformFeeBps) / 10000;
-           payable(treasury).transfer(fee);
+        if (payout > 0) {
+            bet.claimed = true;
+            (bool success, ) = msg.sender.call{value: payout}("");
+            require(success, "Transfer failed");
+            emit WinningsClaimed(id, msg.sender, payout);
         }
-        
-        payable(msg.sender).transfer(payout - fee);
-        emit WinningsClaimed(id, msg.sender, payout - fee);
     }
-
-    // ===== Read-only functions =====
-    function getEvent(uint256 id) public view returns (EventData memory) {
+    
+    function getEvent(uint256 id) external view returns (EventData memory) {
         return events[id];
     }
     
-    function getUserBet(uint256 eventId, address user) public view returns (Bet memory) {
+    function getUserBet(uint256 eventId, address user) external view returns (Bet memory) {
         return userBets[eventId][user];
     }
-
-    function getAllEventIds() public view returns (uint256[] memory) {
-        uint256 count = nextEventId > 0 ? nextEventId -1 : 0;
-        uint256[] memory ids = new uint256[](count);
-        for(uint i = 0; i < count; i++){
-            ids[i] = i + 1;
-        }
-        return ids;
-    }
     
-    function getMultipleUserBets(uint256[] calldata eventIds, address user) public view returns (Bet[] memory) {
+    function getMultipleUserBets(uint256[] memory eventIds, address user) external view returns (Bet[] memory) {
         Bet[] memory bets = new Bet[](eventIds.length);
-        for (uint i = 0; i < eventIds.length; i++) {
+        for(uint i=0; i < eventIds.length; i++){
             bets[i] = userBets[eventIds[i]][user];
         }
         return bets;
     }
 
-    // ===== Admin functions =====
-    function setTreasury(address _newTreasury) public onlyOwner {
+    function getAllEventIds() external view returns (uint256[] memory) {
+        uint256[] memory ids = new uint256[](nextEventId);
+        for (uint i = 0; i < nextEventId; i++) {
+            ids[i] = i;
+        }
+        return ids;
+    }
+
+    function setTreasury(address _newTreasury) external onlyOwner {
         treasury = _newTreasury;
     }
 
-    function setPlatformFee(uint256 _newFeeBps) public onlyOwner {
+    function setPlatformFee(uint256 _newFeeBps) external onlyOwner {
+        require(_newFeeBps <= 1000, "Fee cannot exceed 10%");
         platformFeeBps = _newFeeBps;
     }
 }

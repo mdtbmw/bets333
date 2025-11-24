@@ -20,6 +20,12 @@ const config: HardhatUserConfig = {
       },
     },
   },
+  paths: {
+    sources: "./contracts",
+    tests: "./test",
+    cache: "./cache",
+    artifacts: "./artifacts"
+  },
   // Only configure the network if the required variables are present
   networks: (deployerPrivateKey && intuitionRpcUrl) ? {
     intuition: {
