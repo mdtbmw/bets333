@@ -1,7 +1,7 @@
 
 'use client';
 
-import { createWeb3Modal, ethersConfig } from '@web3modal/ethers/react';
+import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react';
 import { http, createConfig } from 'wagmi';
 import { activeChain } from './chains';
 
@@ -26,7 +26,7 @@ export const config = createConfig({
 });
 
 createWeb3Modal({
-  ethersConfig: ethersConfig({
+  ethersConfig: defaultConfig({
     metadata,
     defaultChainId: activeChain.id,
     enableEIP6963: true,

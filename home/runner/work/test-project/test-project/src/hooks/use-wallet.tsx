@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useWeb3Modal, useWeb3ModalProvider, useDisconnect } from '@web3modal/ethers/react';
+import { useWeb3Modal, useWeb3ModalProvider, useDisconnect, useWeb3ModalAccount } from '@web3modal/ethers/react';
 import { useIsMounted } from './use-is-mounted';
 import { activeChain } from '@/lib/chains';
 import { BrowserProvider } from 'ethers';
@@ -11,7 +11,7 @@ import { formatEther } from 'viem';
 
 export function useWallet() {
   const { open } = useWeb3Modal();
-  const { address, isConnected, chainId } = useAccount();
+  const { address, isConnected, chainId } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
   const { disconnect } = useDisconnect();
   const { switchChain: wagmiSwitchChain } = useSwitchChain();
