@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useWeb3Modal, useWeb3ModalProvider, useDisconnect, useWeb3ModalAccount } from '@web3modal/ethers/react';
@@ -20,7 +21,7 @@ export function useWallet() {
 
   const connected = isMounted && isConnected;
   const wrongNetwork = isMounted && isConnected && chainId !== activeChain.id;
-  
+
   const { data: wagmiBalance, isLoading: isBalanceLoading, refetch } = useBalance({
     address,
   });

@@ -4,8 +4,9 @@
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react';
 import { http, createConfig } from 'wagmi';
 import { activeChain } from './chains';
+import React from 'react';
 
-const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
+export const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
 
 if (!projectId) {
   throw new Error('NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID is not set');

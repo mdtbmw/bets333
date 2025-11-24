@@ -54,7 +54,7 @@ export function useWallet() {
   return {
     address,
     connected,
-    isConnecting: false, // isConnecting is not directly available in wagmi v2, can be derived if needed
+    isConnecting: !isMounted && !isConnected, // A more accurate representation of the initial connecting state.
     chain: activeChain,
     balance,
     balanceLoading: isBalanceLoading,
