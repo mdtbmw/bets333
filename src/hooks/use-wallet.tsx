@@ -1,51 +1,51 @@
-
 'use client';
 
-import { useWeb3Modal, useWeb3ModalAccount, useWeb3ModalProvider, useDisconnect, useSwitchNetwork, useWeb3ModalState } from '@web3modal/ethers/react';
+import { useWeb3Modal, useWeb3ModalProvider, useDisconnect, useWeb3ModalAccount } from '@web3modal/ethers/react';
 import { useIsMounted } from './use-is-mounted';
 import { activeChain } from '@/lib/chains';
-import { BrowserProvider, JsonRpcProvider } from 'ethers';
+import { BrowserProvider } from 'ethers';
 import { useCallback, useState, useEffect } from 'react';
+import { useAccount, useBalance, useSwitchChain } from 'wagmi';
+import { formatEther } from 'viem';
 
 export function useWallet() {
   const { open } = useWeb3Modal();
   const { address, isConnected, chainId } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
   const { disconnect } = useDisconnect();
-  const { switchNetwork } = useSwitchNetwork();
-  const { open: isModalOpen } = useWeb3ModalState();
-  const [balance, setBalance] = useState(0);
-  const [balanceLoading, setBalanceLoading] = useState(false);
-  const isMounted = useIsMounted();
+  const { switchChain: wagmiSwitchChain } = useSwitchChain();
 
-  const isConnecting = isModalOpen && !isConnected;
+  const [balance, setBalance] = useState(0);
+  const isMounted = useIsMounted();
 
   const connected = isMounted && isConnected;
   const wrongNetwork = isMounted && isConnected && chainId !== activeChain.id;
-
-  const fetchBalance = useCallback(async () => {
-    if (!address || !connected) return;
-
-    setBalanceLoading(true);
-    try {
-      // Use a generic provider to fetch balance to avoid wallet interactions
-      const provider = new JsonRpcProvider(activeChain.rpcUrls.default.http[0]);
-      const balanceBigInt = await provider.getBalance(address);
-      const balanceInEther = parseFloat(balanceBigInt.toString()) / 1e18;
-      setBalance(balanceInEther);
-    } catch (e) {
-      console.error("Failed to fetch balance:", e);
-      setBalance(0);
-    } finally {
-      setBalanceLoading(false);
-    }
-  }, [address, connected]);
   
+  const { data: wagmiBalance, isLoading: isBalanceLoading, refetch } = useBalance({
+    address,
+  });
+
   useEffect(() => {
-    if (connected) {
-      fetchBalance();
+    if (wagmiBalance) {
+      setBalance(Number(formatEther(wagmiBalance.value)));
+    } else {
+      setBalance(0);
     }
-  }, [connected, fetchBalance]);
+  }, [wagmiBalance]);
+
+  const fetchBalance = useCallback(() => {
+    if (address) {
+      refetch();
+    }
+  }, [address, refetch]);
+  
+  const switchChain = useCallback(() => {
+      if (wagmiSwitchChain) {
+          wagmiSwitchChain({ chainId: activeChain.id });
+      } else {
+          open({ view: 'Networks' });
+      }
+  }, [wagmiSwitchChain, open]);
 
 
   const walletClient = walletProvider ? new BrowserProvider(walletProvider, chainId) : null;
@@ -53,15 +53,15 @@ export function useWallet() {
   return {
     address,
     connected,
-    isConnecting,
-    chain: activeChain, // Simplified to always return activeChain config
+    isConnecting: false, // isConnecting is not directly available in wagmi v2, can be derived if needed
+    chain: activeChain,
     balance,
-    balanceLoading,
+    balanceLoading: isBalanceLoading,
     fetchBalance,
     connectWallet: open,
     disconnect,
     walletClient,
     wrongNetwork,
-    switchChain: () => switchNetwork(activeChain.id),
+    switchChain,
   };
 }

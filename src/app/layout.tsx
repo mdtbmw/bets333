@@ -7,11 +7,8 @@ import { cn } from '@/lib/utils';
 import { Inter, Space_Grotesk as SpaceGrotesk, JetBrains_Mono as JetBrainsMono } from 'next/font/google';
 import MainLayout from '@/components/layout/main-layout';
 import Head from 'next/head';
-import { Web3Provider } from '@/components/web3-provider';
+import { ClientProviders } from '@/components/client-providers';
 import { Provider as JotaiProvider } from 'jotai';
-import { NotificationsProvider } from '@/lib/state/notifications';
-import { ProfileProvider } from '@/lib/state/profile';
-import { HeaderStateProvider } from '@/lib/state/header';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const spaceGrotesk = SpaceGrotesk({ subsets: ['latin'], variable: '--font-space-grotesk' });
@@ -44,27 +41,21 @@ export default function RootLayout({
       <body className={cn("h-[100dvh] overflow-y-auto bg-background font-sans", inter.variable, spaceGrotesk.variable, jetbrainsMono.variable)} suppressHydrationWarning>
         <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.04] bg-noise"></div>
         
-        <JotaiProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem={false}
-            disableTransitionOnChange
-          >
-            <Web3Provider>
-              <ProfileProvider>
-                <NotificationsProvider>
-                  <HeaderStateProvider>
-                    <MainLayout>
-                      {children}
-                    </MainLayout>
-                  </HeaderStateProvider>
-                </NotificationsProvider>
-              </ProfileProvider>
-            </Web3Provider>
-            <Toaster />
-          </ThemeProvider>
-        </JotaiProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
+          <JotaiProvider>
+            <ClientProviders>
+              <MainLayout>
+                {children}
+              </MainLayout>
+            </ClientProviders>
+          </JotaiProvider>
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

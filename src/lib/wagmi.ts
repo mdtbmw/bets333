@@ -1,4 +1,3 @@
-
 'use client';
 
 import { createWeb3Modal, ethersConfig } from '@web3modal/ethers/react';
