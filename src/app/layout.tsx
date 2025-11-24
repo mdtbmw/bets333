@@ -5,10 +5,8 @@ import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/theme-provider';
 import { cn } from '@/lib/utils';
 import { Inter, Space_Grotesk as SpaceGrotesk, JetBrains_Mono as JetBrainsMono } from 'next/font/google';
-import MainLayout from '@/components/layout/main-layout';
 import Head from 'next/head';
 import { ClientProviders } from '@/components/client-providers';
-import { Provider as JotaiProvider } from 'jotai';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const spaceGrotesk = SpaceGrotesk({ subsets: ['latin'], variable: '--font-space-grotesk' });
@@ -39,21 +37,13 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
       </Head>
       <body className={cn("h-[100dvh] overflow-y-auto bg-background font-sans", inter.variable, spaceGrotesk.variable, jetbrainsMono.variable)} suppressHydrationWarning>
-        <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.04] bg-noise"></div>
-        
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           enableSystem={false}
           disableTransitionOnChange
         >
-          <JotaiProvider>
-            <ClientProviders>
-              <MainLayout>
-                {children}
-              </MainLayout>
-            </ClientProviders>
-          </JotaiProvider>
+          <ClientProviders>{children}</ClientProviders>
           <Toaster />
         </ThemeProvider>
       </body>

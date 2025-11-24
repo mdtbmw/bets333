@@ -7,7 +7,7 @@ import { BlockchainServiceNotifier } from './blockchain-service-notifier';
 import { AppHeader } from './app-header';
 import { useWallet } from '@/hooks/use-wallet';
 import React from 'react';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { useIsMobile } from '@/hooks/use-is-mobile';
 import { useIsMounted } from '@/hooks/use-is-mounted';
 import { NetworkSwitcher } from '../network-switcher';
 import { LandingPage } from '../landing-page';

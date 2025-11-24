@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Sidebar } from './sidebar';
@@ -6,9 +7,10 @@ import { BlockchainServiceNotifier } from './blockchain-service-notifier';
 import { AppHeader } from './app-header';
 import { useWallet } from '@/hooks/use-wallet';
 import React from 'react';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { useIsMobile } from '@/hooks/use-is-mobile';
 import { useIsMounted } from '@/hooks/use-is-mounted';
 import { NetworkSwitcher } from '../network-switcher';
+import { LandingPage } from '../landing-page';
 
 function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
     const isMobile = useIsMobile();
@@ -48,22 +50,16 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const isMounted = useIsMounted();
 
   // Show a loading state or null during initial render and connection checks
-  if (!isMounted) {
-    // This prevents a flash of the landing page before the connection status is known
-    return null;
-  }
-
-  if (isConnecting) {
-    // While connecting, we show nothing to prevent layout shifts.
+  if (!isMounted || isConnecting) {
     // The body background is already set, so this won't be a "black" screen.
     return null;
   }
 
-  // Anonymous user flow: ALWAYS show only the children (which will be the landing page)
+  // If not connected, show the landing page. All pages are inside `children`, so we effectively replace them.
   if (!connected) {
       return (
           <main className="overflow-y-auto h-dvh no-scrollbar">
-              {children}
+              <LandingPage />
           </main>
       );
   }
