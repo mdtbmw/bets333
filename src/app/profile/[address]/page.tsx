@@ -17,7 +17,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle, Camera } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
-import { avatarSeeds } from '@/components/profile/avatar-selection-dialog';
+import { avatarSeeds } from '@/lib/state/profile';
 import { Address } from 'viem';
 
 

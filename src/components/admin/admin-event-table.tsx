@@ -19,7 +19,7 @@ import { useState, useMemo } from "react";
 import { DeclareOutcomeDialog, CancelEventDialog } from "./admin-action-dialogs";
 import { useRouter } from "next/navigation";
 import { useWallet } from "@/hooks/use-wallet";
-import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 const ITEMS_PER_PAGE = 10;
