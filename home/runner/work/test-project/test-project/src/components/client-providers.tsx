@@ -15,20 +15,20 @@ const queryClient = new QueryClient();
 
 export function ClientProviders({ children }: { children: React.ReactNode }) {
     return (
-      <JotaiProvider>
-        <WagmiProvider config={config}>
-            <QueryClientProvider client={queryClient}>
-                <ProfileProvider>
-                  <NotificationsProvider>
-                    <HeaderStateProvider>
-                        <MainLayout>
-                          {children}
-                        </MainLayout>
-                    </HeaderStateProvider>
-                  </NotificationsProvider>
-                </ProfileProvider>
-            </QueryClientProvider>
-        </WagmiProvider>
-      </JotaiProvider>
+      <WagmiProvider config={config}>
+        <QueryClientProvider client={queryClient}>
+          <JotaiProvider>
+            <ProfileProvider>
+              <NotificationsProvider>
+                <HeaderStateProvider>
+                  <MainLayout>
+                    {children}
+                  </MainLayout>
+                </HeaderStateProvider>
+              </NotificationsProvider>
+            </ProfileProvider>
+          </JotaiProvider>
+        </QueryClientProvider>
+      </WagmiProvider>
     );
 }

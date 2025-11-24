@@ -7,7 +7,6 @@ import { cn } from '@/lib/utils';
 import { Inter, Space_Grotesk as SpaceGrotesk, JetBrains_Mono as JetBrainsMono } from 'next/font/google';
 import Head from 'next/head';
 import { ClientProviders } from '@/components/client-providers';
-import { Provider as JotaiProvider } from 'jotai';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const spaceGrotesk = SpaceGrotesk({ subsets: ['latin'], variable: '--font-space-grotesk' });

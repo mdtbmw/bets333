@@ -19,7 +19,10 @@ export function useWallet() {
   const [balance, setBalance] = useState(0);
   const isMounted = useIsMounted();
 
+  const { isConnecting: isWagmiConnecting } = useAccount();
+
   const connected = isMounted && isConnected;
+  const isConnecting = !isMounted || isWagmiConnecting;
   const wrongNetwork = isMounted && isConnected && chainId !== activeChain.id;
 
   const { data: wagmiBalance, isLoading: isBalanceLoading, refetch } = useBalance({
@@ -54,7 +57,7 @@ export function useWallet() {
   return {
     address,
     connected,
-    isConnecting: !isMounted && !isConnected, // A more accurate representation of the initial connecting state.
+    isConnecting,
     chain: activeChain,
     balance,
     balanceLoading: isBalanceLoading,
