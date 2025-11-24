@@ -1,5 +1,7 @@
 
-import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react';
+'use client';
+
+import { createWeb3Modal, defaultConfig } from '@web3modal/wagmi/react';
 import { activeChain, chains } from '@/lib/chains';
 
 const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
@@ -16,17 +18,14 @@ const metadata = {
 };
 
 export const wagmiConfig = defaultConfig({
+  chains,
+  projectId: projectId || 'dummy-project-id',
   metadata,
-  defaultChainId: activeChain.id,
-  enableEIP6963: true,
-  enableCoinbase: false,
-  enableEmail: false,
-  enableInjected: true,
+  ssr: true,
 });
 
 createWeb3Modal({
-  ethersConfig: wagmiConfig,
-  chains,
+  wagmiConfig: wagmiConfig,
   projectId: projectId || 'dummy-project-id',
   themeMode: 'dark',
   themeVariables: {
@@ -34,4 +33,5 @@ createWeb3Modal({
     '--w3m-border-radius-master': '1rem',
     '--w3m-font-family': 'var(--font-space-grotesk)',
   },
+  defaultChain: activeChain,
 });
