@@ -90,8 +90,8 @@ export type NotificationType = {
   title: string;
   description: string;
   timestamp: Date;
-  icon: string; // Lucide icon name
   read: boolean;
+  icon: string; // Lucide icon name
   href?: string;
   variant?: NotificationVariant;
   type: NotificationCategory;
