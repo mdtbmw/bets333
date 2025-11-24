@@ -37,8 +37,8 @@ interface AllLogs {
 
 class IntuitionService {
   public publicClient: PublicClient;
-  private bettingContractAddress: Address | null = null;
-  private profileContractAddress: Address | null = null;
+  private bettingContractAddress: Address;
+  private profileContractAddress: Address;
 
   constructor() {
     this.publicClient = createPublicClient({
@@ -47,22 +47,18 @@ class IntuitionService {
       batch: { multicall: false } 
     });
 
-    if (bettingAddressRaw) {
-        try {
-            this.bettingContractAddress = getAddress(bettingAddressRaw);
-        } catch {
-             console.warn(`WARN: The provided NEXT_PUBLIC_INTUITION_BETTING_ADDRESS "${bettingAddressRaw}" is not a valid Ethereum address. Using placeholder.`);
-             this.bettingContractAddress = '0x0000000000000000000000000000000000000000';
-        }
+    try {
+        this.bettingContractAddress = getAddress(bettingAddressRaw || '0x0');
+    } catch {
+         console.warn(`WARN: The provided NEXT_PUBLIC_INTUITION_BETTING_ADDRESS "${bettingAddressRaw}" is not a valid Ethereum address. Using placeholder.`);
+         this.bettingContractAddress = '0x0000000000000000000000000000000000000000';
     }
 
-    if (profileAddressRaw) {
-        try {
-            this.profileContractAddress = getAddress(profileAddressRaw);
-        } catch {
-             console.warn(`WARN: The provided NEXT_PUBLIC_USER_PROFILE_REGISTRY_ADDRESS "${profileAddressRaw}" is not a valid Ethereum address. Using placeholder.`);
-             this.profileContractAddress = '0x0000000000000000000000000000000000000000';
-        }
+    try {
+        this.profileContractAddress = getAddress(profileAddressRaw || '0x0');
+    } catch {
+         console.warn(`WARN: The provided NEXT_PUBLIC_USER_PROFILE_REGISTRY_ADDRESS "${profileAddressRaw}" is not a valid Ethereum address. Using placeholder.`);
+         this.profileContractAddress = '0x0000000000000000000000000000000000000000';
     }
   }
 
@@ -421,7 +417,7 @@ class IntuitionService {
             title: 'Event Created Successfully!',
             description: `The event is now live. Click to view.`,
             icon: 'CheckCircle',
-            variant: 'success',
+            variant: 'default',
             href: `/event/${eventId}`,
             type: 'general'
         });
