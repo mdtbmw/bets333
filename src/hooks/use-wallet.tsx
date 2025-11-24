@@ -1,33 +1,60 @@
 
 'use client';
 
-import { useAccount, useBalance, useDisconnect, useSwitchChain, useWalletClient } from 'wagmi';
-import { useWeb3Modal } from '@web3modal/wagmi/react';
+import { useWeb3Modal, useWeb3ModalAccount, useWeb3ModalProvider, useDisconnect, useSwitchNetwork, useWeb3ModalState } from '@web3modal/ethers/react';
 import { useIsMounted } from './use-is-mounted';
 import { activeChain } from '@/lib/chains';
+import { BrowserProvider, JsonRpcProvider } from 'ethers';
+import { useCallback, useState, useEffect } from 'react';
 
 export function useWallet() {
-  const { address, isConnected, isConnecting, chain } = useAccount();
   const { open } = useWeb3Modal();
-  const { switchChain } = useSwitchChain();
+  const { address, isConnected, chainId } = useWeb3ModalAccount();
+  const { walletProvider } = useWeb3ModalProvider();
   const { disconnect } = useDisconnect();
+  const { switchNetwork } = useSwitchNetwork();
+  const { open: isModalOpen } = useWeb3ModalState();
+  const [balance, setBalance] = useState(0);
+  const [balanceLoading, setBalanceLoading] = useState(false);
   const isMounted = useIsMounted();
-  
-  const { data: walletClient } = useWalletClient({ chainId: chain?.id });
 
-  const { data: balanceData, isLoading: balanceLoading, refetch: fetchBalance } = useBalance({ 
-    address,
-  });
+  const isConnecting = isModalOpen && !isConnected;
 
-  const balance = balanceData ? parseFloat(balanceData.formatted) : 0;
   const connected = isMounted && isConnected;
-  const wrongNetwork = isMounted && isConnected && chain?.id !== activeChain.id;
+  const wrongNetwork = isMounted && isConnected && chainId !== activeChain.id;
 
+  const fetchBalance = useCallback(async () => {
+    if (!address || !connected) return;
+
+    setBalanceLoading(true);
+    try {
+      // Use a generic provider to fetch balance to avoid wallet interactions
+      const provider = new JsonRpcProvider(activeChain.rpcUrls.default.http[0]);
+      const balanceBigInt = await provider.getBalance(address);
+      const balanceInEther = parseFloat(balanceBigInt.toString()) / 1e18;
+      setBalance(balanceInEther);
+    } catch (e) {
+      console.error("Failed to fetch balance:", e);
+      setBalance(0);
+    } finally {
+      setBalanceLoading(false);
+    }
+  }, [address, connected]);
+  
+  useEffect(() => {
+    if (connected) {
+      fetchBalance();
+    }
+  }, [connected, fetchBalance]);
+
+
+  const walletClient = walletProvider ? new BrowserProvider(walletProvider, chainId) : null;
+  
   return {
     address,
     connected,
-    isConnecting: isConnecting || !isMounted,
-    chain,
+    isConnecting,
+    chain: activeChain, // Simplified to always return activeChain config
     balance,
     balanceLoading,
     fetchBalance,
@@ -35,6 +62,6 @@ export function useWallet() {
     disconnect,
     walletClient,
     wrongNetwork,
-    switchChain: () => switchChain({ chainId: activeChain.id }),
+    switchChain: () => switchNetwork(activeChain.id),
   };
 }
