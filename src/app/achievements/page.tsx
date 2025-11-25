@@ -2,23 +2,21 @@
 'use client';
 
 import { useWallet } from "@/hooks/use-wallet";
-import { useRouter } from 'next/navigation';
-import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { Skeleton } from "@/components/ui/skeleton";
 import { RefreshCw, AlertTriangle, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/layout/page-header";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { DynamicIcon } from "@/lib/icons";
 import { blockchainService } from "@/services/blockchain";
-import type { UserStats, Achievement, Event } from "@/lib/types";
+import type { UserStats, Achievement } from "@/lib/types";
 import { achievements } from "@/lib/achievements";
 import { useNotifications } from '@/hooks/use-notifications';
 import { cn } from "@/lib/utils";
 import { useAuthGuard } from "@/hooks/use-auth-guard";
-import { useProfile } from '@/hooks/use-profile';
-import { formatEther, Hex } from "viem";
+import { useProfile } from '@/lib/state/profile';
 import { UserIDCard } from "@/components/profile/user-id-card";
 import { ranks, getRank, calculateUserStats } from "@/lib/ranks";
 

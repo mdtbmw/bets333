@@ -38,27 +38,27 @@ export default function RootLayout({
       <body className={cn("h-[100dvh] overflow-y-auto bg-background font-sans", inter.variable, spaceGrotesk.variable, jetbrainsMono.variable)} suppressHydrationWarning>
         <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.04] bg-noise"></div>
 
-        <JotaiProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem={false}
-            disableTransitionOnChange
-          >
-            <Web3Provider>
-              <ProfileProvider>
-                <NotificationsProvider>
-                  <HeaderStateProvider>
-                    <MainLayout>
-                      {children}
-                    </MainLayout>
-                  </HeaderStateProvider>
-                </NotificationsProvider>
-              </ProfileProvider>
-            </Web3Provider>
-            <Toaster />
-          </ThemeProvider>
-        </JotaiProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
+            <JotaiProvider>
+              <Web3Provider>
+                <ProfileProvider>
+                  <NotificationsProvider>
+                    <HeaderStateProvider>
+                      <MainLayout>
+                        {children}
+                      </MainLayout>
+                    </HeaderStateProvider>
+                  </NotificationsProvider>
+                </ProfileProvider>
+              </Web3Provider>
+              <Toaster />
+            </JotaiProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
