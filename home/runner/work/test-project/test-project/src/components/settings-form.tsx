@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -13,7 +12,7 @@ import { useWallet } from '@/hooks/use-wallet';
 import { blockchainService } from '@/services/blockchain';
 import { UserStats, UserProfile } from '@/lib/types';
 import { Textarea } from '@/components/ui/textarea';
-import { AvatarSelectionDialog } from './profile/avatar-selection-dialog';
+import { AvatarSelectionDialog } from '@/components/profile/avatar-selection-dialog';
 import { getRank, calculateUserStats } from '@/lib/ranks';
 import { Address } from 'viem';
 
@@ -374,5 +373,3 @@ export function SettingsForm() {
     </div>
   );
 }
-
-    

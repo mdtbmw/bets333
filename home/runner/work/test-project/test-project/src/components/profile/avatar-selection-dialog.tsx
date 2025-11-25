@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -92,5 +91,3 @@ export function AvatarSelectionDialog({ isOpen, onOpenChange, onSave }: AvatarSe
         </Dialog>
     );
 }
-
-    

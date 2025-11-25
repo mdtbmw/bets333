@@ -1,4 +1,3 @@
-
 'use client';
 
 import { atom, useAtom, SetStateAction, WritableAtom, Atom } from 'jotai';
@@ -102,4 +101,3 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
     </ProfileContext.Provider>
   );
 };
-

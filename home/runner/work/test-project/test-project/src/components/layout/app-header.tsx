@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useWallet } from '@/hooks/use-wallet';
