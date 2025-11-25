@@ -24,7 +24,7 @@ import { ranks, getRank, calculateUserStats } from "@/lib/ranks";
 
 const AchievementCard = ({ achievement, userStats }: { achievement: Achievement, userStats: UserStats | null }) => {
     const isUnlocked = userStats ? achievement.criteria(userStats) : false;
-    
+
     if (!isUnlocked) {
         return (
             <div className="aspect-square rounded-[2rem] bg-card/50 border border-border relative flex flex-col items-center justify-center p-4 opacity-50 grayscale hover:opacity-70 transition-opacity">
@@ -48,8 +48,8 @@ const AchievementCard = ({ achievement, userStats }: { achievement: Achievement,
         if (achievement.name.includes("Oracle")) return "border-purple-500/30 hover:border-purple-500";
         return "border-blue-500/30 hover:border-blue-500";
     }, [achievement.name]);
-    
-     const bgColor = useMemo(() => {
+
+    const bgColor = useMemo(() => {
         if (achievement.name.includes("Genesis")) return "bg-gold-500/5";
         if (achievement.name.includes("Oracle")) return "bg-purple-500/5";
         return "bg-blue-500/5";
@@ -61,14 +61,14 @@ const AchievementCard = ({ achievement, userStats }: { achievement: Achievement,
             borderColor
         )}>
             <div className={cn("absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity", bgColor)}></div>
-            <div className="w-16 h-16 mb-3 relative animate-float" style={{ animationDelay: `${Math.random()}s`}}>
-                <DynamicIcon 
-                    name={achievement.icon} 
+            <div className="w-16 h-16 mb-3 relative animate-float" style={{ animationDelay: `${Math.random()}s` }}>
+                <DynamicIcon
+                    name={achievement.icon}
                     className={cn("w-full h-full drop-shadow-[0_0_15px_rgba(251,191,36,0.5)]", iconColor)}
                 />
             </div>
             <p className="text-xs font-bold text-foreground text-center">{achievement.name}</p>
-            <p className="text-[9px] text-center uppercase tracking-wider mt-1" style={{ color: iconColor.replace('text-', '')}}>{achievement.description}</p>
+            <p className="text-[9px] text-center uppercase tracking-wider mt-1" style={{ color: iconColor.replace('text-', '') }}>{achievement.description}</p>
         </div>
     );
 };
@@ -77,11 +77,11 @@ const MAX_SCORE = ranks[ranks.length - 1].score;
 
 const PathToApex = ({ trustScore }: { trustScore: number }) => {
     const progressPercentage = Math.min((trustScore / MAX_SCORE) * 100, 100);
-    
+
     const currentRank = useMemo(() => getRank(trustScore), [trustScore]);
 
     return (
-         <div className="animate-slide-up" style={{ animationDelay: '200ms' }}>
+        <div className="animate-slide-up" style={{ animationDelay: '200ms' }}>
             <div className="p-8 rounded-[2.5rem] bg-card/40 border border-border relative overflow-hidden">
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
                     <div>
@@ -89,17 +89,17 @@ const PathToApex = ({ trustScore }: { trustScore: number }) => {
                         <p className="text-muted-foreground">Your current standing in the protocol.</p>
                     </div>
                     <div className="px-4 py-2 rounded-full border border-primary/30 bg-primary/10 text-primary text-sm font-bold shadow-sm shadow-primary/10 mt-4 md:mt-0">
-                       Current Rank: <span className="text-foreground">{currentRank.name}</span>
+                        Current Rank: <span className="text-foreground">{currentRank.name}</span>
                     </div>
                 </div>
-                
+
                 <div className="relative h-4 bg-secondary rounded-full mb-12">
-                    <div 
-                        className="absolute top-0 left-0 h-full bg-gradient-to-r from-zinc-600 via-primary to-white rounded-full shadow-[0_0_20px_hsla(var(--primary)/0.5)] transition-all duration-1000" 
-                        style={{ width: `${progressPercentage}%`}}
+                    <div
+                        className="absolute top-0 left-0 h-full bg-gradient-to-r from-zinc-600 via-primary to-white rounded-full shadow-[0_0_20px_hsla(var(--primary)/0.5)] transition-all duration-1000"
+                        style={{ width: `${progressPercentage}%` }}
                     ></div>
-                    <div 
-                        className="absolute top-1/2 -translate-y-1/2 w-6 h-6 bg-white rounded-full ring-4 ring-card shadow-[0_0_15px_white] animate-pulse transition-all duration-1000" 
+                    <div
+                        className="absolute top-1/2 -translate-y-1/2 w-6 h-6 bg-white rounded-full ring-4 ring-card shadow-[0_0_15px_white] animate-pulse transition-all duration-1000"
                         style={{ left: `${progressPercentage}%` }}
                     ></div>
                 </div>
@@ -124,136 +124,136 @@ const PathToApex = ({ trustScore }: { trustScore: number }) => {
 }
 
 export default function AchievementsPage() {
-  const { isLoading: isAuthLoading } = useAuthGuard();
-  const { address } = useWallet();
-  const { profile } = useProfile();
-  const [stats, setStats] = useState<UserStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const { addNotification } = useNotifications();
+    const { isLoading: isAuthLoading } = useAuthGuard();
+    const { address } = useWallet();
+    const { profile } = useProfile();
+    const [stats, setStats] = useState<UserStats | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const { addNotification } = useNotifications();
 
-  const username = useMemo(() => profile.username || (address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "User"), [address, profile.username]);
-  
-  const fetchUserStats = useCallback(async () => {
-    if (!address) {
-        setLoading(false);
-        return;
-    };
-    setLoading(true);
-    setError(null);
-    try {
-        const allEvents = await blockchainService.getAllEvents();
-        if (allEvents.length === 0) {
-            setStats({ wins: 0, losses: 0, totalBets: 0, accuracy: 0, trustScore: 0 });
+    const username = useMemo(() => profile.username || (address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "User"), [address, profile.username]);
+
+    const fetchUserStats = useCallback(async () => {
+        if (!address) {
             setLoading(false);
             return;
-        }
-
-        const eventIds = allEvents.map(e => BigInt(e.id));
-        
-        let userBetsOnAllEvents: any[] = [];
-        if (eventIds.length > 0) {
-            userBetsOnAllEvents = await blockchainService.getMultipleUserBets(eventIds, address);
-        }
-        
-        const newStats = calculateUserStats(allEvents, userBetsOnAllEvents);
-        
-        setStats(prevStats => {
-            if (prevStats && newStats.totalBets > prevStats.totalBets) { // Only notify if there are new bets
-                achievements.forEach(ach => {
-                    const wasUnlocked = ach.criteria(prevStats);
-                    const isNowUnlocked = ach.criteria(newStats);
-                    if (!wasUnlocked && isNowUnlocked) {
-                        addNotification({
-                            title: `Artifact Unlocked!`,
-                            description: `You've earned the "${ach.name}" artifact.`,
-                            icon: ach.icon,
-                            href: '/achievements',
-                            type: 'general'
-                        });
-                    }
-                });
+        };
+        setLoading(true);
+        setError(null);
+        try {
+            const allEvents = await blockchainService.getAllEvents();
+            if (allEvents.length === 0) {
+                setStats({ wins: 0, losses: 0, totalBets: 0, accuracy: 0, trustScore: 0 });
+                setLoading(false);
+                return;
             }
-            return newStats;
-        });
 
-    } catch (e: any) {
-      console.error("Failed to fetch user stats for artifacts:", e);
-      setError("Could not load your on-chain profile data. The network may be busy.");
-    } finally {
-      setLoading(false);
-    }
-  }, [address, addNotification]);
+            const eventIds = allEvents.map(e => BigInt(e.id));
 
-  useEffect(() => {
-    if (!isAuthLoading && address) {
-        fetchUserStats();
-    }
-    if (!isAuthLoading && !address) {
-        setLoading(false);
-    }
-  }, [isAuthLoading, address, fetchUserStats]);
-  
-  const pageLoading = isAuthLoading || (loading && !stats);
-  const unlockedAchievements = useMemo(() => achievements.filter(a => stats && a.criteria(stats)), [stats]);
+            let userBetsOnAllEvents: any[] = [];
+            if (eventIds.length > 0) {
+                userBetsOnAllEvents = await blockchainService.getMultipleUserBets(eventIds, address);
+            }
 
-  if (pageLoading) {
-    return (
-        <div className="space-y-6">
-            <PageHeader 
-                title="Artifacts"
-                description="Milestones that mark your prediction journey."
-            />
-             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-                {Array.from({length: 6}).map((_, i) => (
-                    <Skeleton key={i} className="aspect-square w-full rounded-[2rem]" />
-                ))}
+            const newStats = calculateUserStats(allEvents, userBetsOnAllEvents);
+
+            setStats(prevStats => {
+                if (prevStats && newStats.totalBets > prevStats.totalBets) { // Only notify if there are new bets
+                    achievements.forEach(ach => {
+                        const wasUnlocked = ach.criteria(prevStats);
+                        const isNowUnlocked = ach.criteria(newStats);
+                        if (!wasUnlocked && isNowUnlocked) {
+                            addNotification({
+                                title: `Artifact Unlocked!`,
+                                description: `You've earned the "${ach.name}" artifact.`,
+                                icon: ach.icon,
+                                href: '/achievements',
+                                type: 'general'
+                            });
+                        }
+                    });
+                }
+                return newStats;
+            });
+
+        } catch (e: any) {
+            console.error("Failed to fetch user stats for artifacts:", e);
+            setError("Could not load your on-chain profile data. The network may be busy.");
+        } finally {
+            setLoading(false);
+        }
+    }, [address, addNotification]);
+
+    useEffect(() => {
+        if (!isAuthLoading && address) {
+            fetchUserStats();
+        }
+        if (!isAuthLoading && !address) {
+            setLoading(false);
+        }
+    }, [isAuthLoading, address, fetchUserStats]);
+
+    const pageLoading = isAuthLoading || (loading && !stats);
+    const unlockedAchievements = useMemo(() => achievements.filter(a => stats && a.criteria(stats)), [stats]);
+
+    if (pageLoading) {
+        return (
+            <div className="space-y-6">
+                <PageHeader
+                    title="Artifacts"
+                    description="Milestones that mark your prediction journey."
+                />
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                        <Skeleton key={i} className="aspect-square w-full rounded-[2rem]" />
+                    ))}
+                </div>
             </div>
-        </div>
-    )
-  }
+        )
+    }
 
-  return (
-    <div className="space-y-12">
-        <div className="flex flex-col xl:flex-row-reverse gap-8 items-start">
-             <UserIDCard user={{name: username, address: address}} stats={stats}/>
+    return (
+        <div className="space-y-12">
+            <div className="flex flex-col xl:flex-row-reverse gap-8 items-start">
+                <UserIDCard user={{ name: username, address: address }} stats={stats} />
 
-             <div className="flex-1 w-full">
-                <div className="animate-slide-up" style={{ animationDelay: '100ms' }}>
-                    <div className="flex items-center justify-between mb-8">
-                        <PageHeader title="Artifacts" description="Milestones marking your prediction journey." />
-                        <div className="flex gap-2">
-                             <span className="text-xs text-muted-foreground bg-card px-3 py-1.5 rounded-full border border-border">{unlockedAchievements.length} / {achievements.length} Unlocked</span>
+                <div className="flex-1 w-full">
+                    <div className="animate-slide-up" style={{ animationDelay: '100ms' }}>
+                        <div className="flex items-center justify-between mb-8">
+                            <PageHeader title="Artifacts" description="Milestones marking your prediction journey." />
+                            <div className="flex gap-2">
+                                <span className="text-xs text-muted-foreground bg-card px-3 py-1.5 rounded-full border border-border">{unlockedAchievements.length} / {achievements.length} Unlocked</span>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                            {achievements.map((ach) => (
+                                <AchievementCard key={ach.id} achievement={ach} userStats={stats} />
+                            ))}
                         </div>
                     </div>
-
-                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                        {achievements.map((ach) => (
-                            <AchievementCard key={ach.id} achievement={ach} userStats={stats} />
-                        ))}
-                    </div>
                 </div>
-             </div>
-        </div>
+            </div>
 
-        <PathToApex trustScore={stats?.trustScore ?? 0} />
-        
-        { error && (
-          <div className="px-4">
-             <Alert variant="destructive" className="bg-card">
-                <AlertTriangle className="h-4 w-4" />
-                <AlertTitle>Data Fetch Error</AlertTitle>
-                <AlertDescription>
-                    <p>{error}</p>
-                     <Button onClick={fetchUserStats} className="mt-4 w-full">
-                        <RefreshCw className="w-4 h-4 mr-2"/>
-                        Retry
-                    </Button>
-                </AlertDescription>
-            </Alert>
-          </div>
-        )}
-        
-    </div>
-  );
+            <PathToApex trustScore={stats?.trustScore ?? 0} />
+
+            {error && (
+                <div className="px-4">
+                    <Alert variant="destructive" className="bg-card">
+                        <AlertTriangle className="h-4 w-4" />
+                        <AlertTitle>Data Fetch Error</AlertTitle>
+                        <AlertDescription>
+                            <p>{error}</p>
+                            <Button onClick={fetchUserStats} className="mt-4 w-full">
+                                <RefreshCw className="w-4 h-4 mr-2" />
+                                Retry
+                            </Button>
+                        </AlertDescription>
+                    </Alert>
+                </div>
+            )}
+
+        </div>
+    );
 }

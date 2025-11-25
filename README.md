@@ -1,18 +1,85 @@
-# Intuition BETs - Decentralized Prediction Market
+# Intuition BETs - Prediction Market Platform
 
-Intuition BETs is a premier, fully-decentralized prediction market that empowers users to capitalize on their real-world knowledge by betting on event outcomes with the official **$TRUST token**. Built on a foundation of immutable smart contracts and a secure backend, every stake, outcome, and payout is executed with maximum transparency, security, and efficiency.
+This is a complete Next.js application for a decentralized prediction market platform called "Intuition BETs". It allows users to bet on the outcomes of real-world events, features a robust admin panel for managing events, and includes AI-powered tools for event creation and resolution.
 
-This repository contains the full source code for the Next.js frontend application.
+The application is built with a modern tech stack, including:
+- **Frontend:** Next.js, React, TypeScript, Tailwind CSS, ShadCN UI
+- **Blockchain:** Hardhat, Ethers.js, wagmi for wallet integration
+- **Generative AI:** Genkit for AI flows (event generation, resolution, etc.)
 
-## 1. Running the Application Locally
+---
 
-To run the development server, first ensure you have all dependencies installed:
+## 1. Environment Setup
+
+To run this application, create a `.env` file in the root of the project and add the following variables.
+
+```
+# =================================================================
+# == CORE BLOCKCHAIN & DEPLOYMENT CONFIGURATION
+# =================================================================
+
+# --- Intuition Testnet (Default) ---
+# These values connect the app to the Intuition test network.
+NEXT_PUBLIC_INTUITION_RPC="https://rpc.intuition.systems/http"
+NEXT_PUBLIC_INTUITION_CHAIN_ID="1155"
+
+# --- WalletConnect ---
+# This is required for the "Connect Wallet" button to function.
+# Get your free Project ID from https://cloud.walletconnect.com
+NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=
+
+# --- Contract Deployment & Admin Wallet ---
+# This wallet will be the owner of the contracts and have admin privileges.
+# WARNING: The private key gives full control over the wallet. NEVER commit it to a public repository.
+INTUITION_DEPLOYER_PRIVATE_KEY=
+NEXT_PUBLIC_ADMIN_ADDRESS=
+
+# --- Platform Fees ---
+# This wallet will receive the platform fees collected from resolved bets.
+TREASURY_ADDRESS=
+PLATFORM_FEE_BPS=300 # 300 basis points = 3%
+
+# =================================================================
+# == DEPLOYED CONTRACT ADDRESSES (Fill After First Deployment)
+# =================================================================
+# After you run the deployment script for the first time, paste the output addresses here.
+NEXT_PUBLIC_INTUITION_BETTING_ADDRESS=
+NEXT_PUBLIC_USER_PROFILE_REGISTRY_ADDRESS=
+
+```
+
+### How to Get Your Wallet Details
+
+1.  **Public Address (`NEXT_PUBLIC_ADMIN_ADDRESS`)**: In MetaMask, your public address is shown at the top of the account view. Copy it.
+2.  **Private Key (`INTUITION_DEPLOYER_PRIVATE_KEY`)**: In MetaMask, click the three dots (⋮) -> **Account details** -> **Show private key**.
+
+---
+
+## 2. Install Dependencies
+
+Install the required packages using npm:
 
 ```bash
 npm install
 ```
 
-Then, run the development server:
+---
+
+## 3. Deploy Smart Contracts
+
+Before running the application, you must deploy the smart contracts to the blockchain. This script uses the `INTUITION_DEPLOYER_PRIVATE_KEY` and other variables from your `.env` file.
+
+```bash
+npm run deploy:contracts
+```
+
+After the script succeeds, it will print the new contract addresses. **Copy these addresses and paste them into your `.env` file** for the corresponding `NEXT_PUBLIC_..._ADDRESS` variables.
+
+---
+
+## 4. Run the Application
+
+Once your environment is configured and contracts are deployed, you can run the local development server:
 
 ```bash
 npm run dev
@@ -20,66 +87,14 @@ npm run dev
 
 The application will be available at [http://localhost:9002](http://localhost:9002).
 
-## 2. Environment Setup
+---
 
-Before running the application or deploying the smart contracts, you must set up your local environment variables. Create a `.env` file in the root of the project and add the following values.
+## Available Scripts
 
-### Core Blockchain Configuration
-These variables are required for the application to connect to the correct blockchain network.
-
-```env
-# The HTTP RPC URL for the Intuition network
-NEXT_PUBLIC_INTUITION_RPC=https://rpc.intuition.systems/http
-
-# The Chain ID for the Intuition network
-NEXT_PUBLIC_INTUITION_CHAIN_ID=1155
+- **`npm run dev`**: Starts the Next.js development server with Turbopack.
+- **`npm run build`**: Creates an optimized production build of the application.
+- **`npm run start`**: Starts the application in production mode (requires `npm run build` first).
+- **`npm run lint`**: Lints the codebase for errors and style issues.
+- **`npm run typecheck`**: Runs the TypeScript compiler to check for type errors.
+- **`npm run deploy:contracts`**: Deploys the smart contracts to the configured network.
 ```
-
-### WalletConnect Configuration
-This is required for the "Connect Wallet" functionality.
-
-```env
-# Your project ID from WalletConnect Cloud
-NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=YOUR_WALLETCONNECT_PROJECT_ID
-```
-*   **How to get it:**
-    1.  Go to [cloud.walletconnect.com](https://cloud.walletconnect.com) and create a free project.
-    2.  Copy your **Project ID** from the dashboard.
-
-### Smart Contract Deployment & Administration
-These variables are required to deploy the smart contracts and manage the platform.
-
-```env
-# The private key of the wallet that will deploy and own the contracts.
-# WARNING: Keep this key secure and never commit it to version control.
-INTUITION_DEPLOYER_PRIVATE_KEY=YOUR_DEPLOYER_PRIVATE_KEY
-
-# The public wallet address corresponding to the deployer's private key.
-NEXT_PUBLIC_ADMIN_ADDRESS=YOUR_ADMIN_WALLET_ADDRESS
-
-# The wallet address where platform fees will be collected.
-TREASURY_ADDRESS=YOUR_TREASURY_WALLET_ADDRESS
-
-# The platform fee in basis points (e.g., 300 for 3%).
-PLATFORM_FEE_BPS=300
-```
-*   **How to get them (from MetaMask):**
-    1.  In MetaMask, select your deployer/admin account.
-    2.  Copy the public address (`0x...`) for `NEXT_PUBLIC_ADMIN_ADDRESS`.
-    3.  Click the three dots (⋮) -> **"Account details"** -> **"Show private key"** to get your `INTUITION_DEPLOYER_PRIVATE_KEY`.
-
-### Deployed Contract Addresses
-These variables must be filled in *after* you have deployed the smart contracts for the first time.
-
-```env
-# The addresses of your deployed smart contracts.
-NEXT_PUBLIC_INTUITION_BETTING_ADDRESS=
-NEXT_PUBLIC_USER_PROFILE_REGISTRY_ADDRESS=
-```
-*   **How to get them:**
-    1.  Ensure all the variables above are set correctly in your `.env` file.
-    2.  Run the deployment script from your terminal:
-        ```bash
-        npm run deploy:contracts
-        ```
-    3.  The script will output the new contract addresses. Copy and paste them into your `.env` file.

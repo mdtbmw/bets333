@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2020",
+    "baseUrl": ".",
     "lib": [
       "dom",
       "dom.iterable",
@@ -22,25 +23,9 @@
         "name": "next"
       }
     ],
-    "baseUrl": ".",
     "paths": {
-      "@/app/*": [
-        "src/app/*"
-      ],
-      "@/components/*": [
-        "src/components/*"
-      ],
-      "@/lib/*": [
-        "src/lib/*"
-      ],
-      "@/hooks/*": [
-        "src/hooks/*"
-      ],
-      "@/services/*": [
-        "src/services/*"
-      ],
-      "@/ai/*": [
-        "src/ai/*"
+      "@/*": [
+        "./src/*"
       ]
     }
   },
