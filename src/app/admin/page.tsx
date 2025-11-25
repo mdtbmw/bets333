@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useAdmin } from "@/hooks/use-admin";
@@ -26,7 +25,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { AiOraclePanel } from "@/components/admin/ai-oracle-panel";
-import { useNotifications } from '@/lib/state/notifications';
+import { useNotifications } from '@/hooks/use-notifications';
 import { cn } from "@/lib/utils";
 import { useAuthGuard } from "@/hooks/use-auth-guard";
 import { AdminNav } from "@/components/admin/admin-nav";
@@ -84,7 +83,7 @@ export default function AdminPage() {
 
   const fetchCategories = useCallback(async () => {
     const data = await readCategories();
-    setCategories(data.categories.map(c => ({ id: c.id, name: c.name, icon: c.icon})));
+    setCategories(data.categories.map(c => ({ id: c.id, name: c.name, icon: c.icon} as Category)));
   }, []);
 
   const fetchLeaderboard = useCallback(async () => {
@@ -101,7 +100,7 @@ export default function AdminPage() {
             
             const eventIds = allEvents.map(e => BigInt(e.id));
             const userStatsPromises = bettorsArray.map(async (bettor) => {
-                const userBetsOnAllEvents = await blockchainService.getMultipleUserBets(eventIds, bettor);
+                const userBetsOnAllEvents = await blockchainService.getMultipleUserBets(bettor, eventIds);
 
                 let totalWagered = 0n;
                 userBetsOnAllEvents.forEach(bet => {

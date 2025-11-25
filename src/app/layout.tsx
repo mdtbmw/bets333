@@ -8,8 +8,8 @@ import { Inter, Space_Grotesk as SpaceGrotesk, JetBrains_Mono as JetBrainsMono }
 import MainLayout from '@/components/layout/main-layout';
 import { Web3Provider } from '@/components/web3-provider';
 import { Provider as JotaiProvider } from 'jotai';
-import { NotificationsProvider } from '@/lib/state/notifications';
-import { ProfileProvider } from '@/lib/state/profile';
+import { NotificationsProvider } from '@/hooks/use-notifications';
+import { ProfileProvider } from '@/hooks/use-profile';
 import { HeaderStateProvider } from '@/lib/state/header';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });

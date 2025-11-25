@@ -14,10 +14,10 @@ import { DynamicIcon } from "@/lib/icons";
 import { blockchainService } from "@/services/blockchain";
 import type { UserStats, Achievement, Event } from "@/lib/types";
 import { achievements } from "@/lib/achievements";
-import { useNotifications } from '@/lib/state/notifications';
+import { useNotifications } from '@/hooks/use-notifications';
 import { cn } from "@/lib/utils";
 import { useAuthGuard } from "@/hooks/use-auth-guard";
-import { useProfile } from '@/lib/state/profile';
+import { useProfile } from '@/hooks/use-profile';
 import { formatEther, Hex } from "viem";
 import { UserIDCard } from "@/components/profile/user-id-card";
 import { ranks, getRank, calculateUserStats } from "@/lib/ranks";
@@ -105,12 +105,12 @@ const PathToApex = ({ trustScore }: { trustScore: number }) => {
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 relative z-10">
-                    {ranks.map(rank => (
+                    {ranks.map((rank, index) => (
                         <div key={rank.name} className={cn("text-center md:text-left transition-opacity", trustScore >= rank.score ? "opacity-100" : "opacity-30")}>
                             <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
                                 <DynamicIcon name={rank.icon} className={cn("w-4 h-4", trustScore >= rank.score ? "text-primary" : "text-muted-foreground")} />
                                 <p className={cn("text-xs uppercase font-bold tracking-wider", trustScore >= rank.score ? "text-primary" : "text-muted-foreground")}>
-                                    Rank {ranks.indexOf(rank) + 1}
+                                    Rank {index + 1}
                                 </p>
                             </div>
                             <h3 className="text-foreground font-bold">{rank.name}</h3>
@@ -153,7 +153,7 @@ export default function AchievementsPage() {
 
             let userBetsOnAllEvents: any[] = [];
             if (eventIds.length > 0) {
-                userBetsOnAllEvents = await blockchainService.getMultipleUserBets(eventIds, address);
+                userBetsOnAllEvents = await blockchainService.getMultipleUserBets(address, eventIds);
             }
 
             const newStats = calculateUserStats(allEvents, userBetsOnAllEvents);

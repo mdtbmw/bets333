@@ -28,7 +28,7 @@ export default function CreateEventPage() {
     useEffect(() => {
         const fetchCats = async () => {
             const data = await readCategories();
-            setCategories(data.categories);
+            setCategories(data.categories.map(c => ({...c} as Category)));
         }
         fetchCats();
     }, []);
