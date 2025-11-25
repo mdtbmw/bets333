@@ -6,12 +6,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { blockchainService } from '@/services/blockchain';
 import { useWallet } from '@/hooks/use-wallet';
 import type { Event, Bet, PnLBet } from '@/lib/types';
-import { formatEther, parseEther } from 'viem';
-import { Skeleton } from '../ui/skeleton';
-import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
+import { formatEther, parseEther, Address } from 'viem';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle, Loader2 } from 'lucide-react';
 import { useNotifications } from '@/lib/state/notifications';
-import { BetCard } from './bet-card';
+import { BetCard } from '@/components/profile/bet-card';
 
 export function BettingHistory() {
     const { address, walletClient } = useWallet();
@@ -38,7 +38,7 @@ export function BettingHistory() {
 
             const eventIdsAsBigInt = allEvents.map(e => BigInt(e.id));
             if (eventIdsAsBigInt.length > 0) {
-                const betData = await blockchainService.getMultipleUserBets(eventIdsAsBigInt, address);
+                const betData = await blockchainService.getMultipleUserBets(eventIdsAsBigInt, address as Address);
                 
                 const userBets: Bet[] = betData.map((onChainBet, index) => {
                     const event = allEvents[index];
@@ -100,7 +100,7 @@ export function BettingHistory() {
                 title: 'Success!',
                 description: `Your funds for "${bet.eventQuestion.slice(0,20)}..." have been claimed.`,
                 icon: 'CheckCircle',
-                variant: 'success',
+                variant: 'default',
                 type: 'onWinningsClaimed'
             });
             await fetchData(); // Refresh data

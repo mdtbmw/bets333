@@ -8,7 +8,7 @@ import { useWallet } from '@/hooks/use-wallet';
 import { blockchainService } from '@/services/blockchain';
 import { formatEther, parseEther } from 'viem';
 import type { Event, Bet, PnLBet } from '@/lib/types';
-import { Skeleton } from '../ui/skeleton';
+import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
 
 const CustomTooltip = ({ active, payload, label, currencySymbol }: any) => {

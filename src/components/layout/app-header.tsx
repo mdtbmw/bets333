@@ -2,13 +2,13 @@
 'use client';
 
 import { useWallet } from '@/hooks/use-wallet';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DynamicIcon } from '@/lib/icons';
 import Link from 'next/link';
 import { useProfile } from '@/lib/state/profile';
-import { Logo } from '../ui/logo';
+import { Logo } from '@/components/ui/logo';
 import { usePathname, useRouter } from 'next/navigation';
-import { Button } from '../ui/button';
+import { Button } from '@/components/ui/button';
 import { ArrowLeft, Menu, X, MoreVertical, Bell, Sun, Moon, LogOut } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
@@ -19,18 +19,18 @@ import {
   SheetTitle,
   SheetTrigger,
   SheetClose
-} from '../ui/sheet';
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '../ui/dialog';
+} from '@/components/ui/sheet';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useNotifications } from '@/lib/state/notifications';
-import { ScrollArea } from '../ui/scroll-area';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { formatDistanceToNowStrict } from 'date-fns';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useTheme } from 'next-themes';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { useHeaderState } from '@/lib/state/header';
-import { UserProfileStats } from '../profile/user-profile-stats';
+import { UserProfileStats } from '@/components/profile/user-profile-stats';
 import { navLinks } from '@/lib/nav-links';
-import { Marquee } from '../ui/marquee';
+import { Marquee } from '@/components/ui/marquee';
 
 const NON_ROOT_PATHS = ['/event', '/admin', '/create-event'];
 

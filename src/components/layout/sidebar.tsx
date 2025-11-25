@@ -7,26 +7,26 @@ import { cn } from '@/lib/utils';
 import React, { useState, useEffect } from 'react';
 import { useAdmin } from '@/hooks/use-admin';
 import type { NavLink } from '@/lib/nav-links';
-import { Skeleton } from '../ui/skeleton';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useIsMounted } from '@/hooks/use-is-mounted';
 import { useTheme } from 'next-themes';
 import { DynamicIcon } from '@/lib/icons';
 import { useWallet } from '@/hooks/use-wallet';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { useNotifications } from '@/lib/state/notifications';
-import { ScrollArea } from '../ui/scroll-area';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { formatDistanceToNowStrict } from 'date-fns';
 import { useProfile } from '@/lib/state/profile';
 import { navLinks } from '@/lib/nav-links';
-import { Logo } from '../ui/logo';
+import { Logo } from '@/components/ui/logo';
 import { Sun, Moon, LogOut } from 'lucide-react';
-import { UserProfileStats } from '../profile/user-profile-stats';
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '../ui/dialog';
+import { UserProfileStats } from '@/components/profile/user-profile-stats';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 
