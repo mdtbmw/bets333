@@ -269,5 +269,3 @@ export function AppHeader() {
   // Fallback for non-mobile (which is an empty header, as desktop is handled by sidebar)
   return null;
 }
-
-    

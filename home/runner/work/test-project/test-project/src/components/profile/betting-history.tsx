@@ -38,7 +38,7 @@ export function BettingHistory() {
 
             const eventIdsAsBigInt = allEvents.map(e => BigInt(e.id));
             if (eventIdsAsBigInt.length > 0) {
-                const betData = await blockchainService.getMultipleUserBets(eventIdsAsBigInt, address);
+                const betData = await blockchainService.getMultipleUserBets(eventIdsAsBigInt, address as Address);
                 
                 const userBets: Bet[] = betData.map((onChainBet, index) => {
                     const event = allEvents[index];
@@ -195,5 +195,3 @@ export function BettingHistory() {
         </Tabs>
     );
 }
-
-    
