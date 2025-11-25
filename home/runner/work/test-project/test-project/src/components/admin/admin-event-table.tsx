@@ -406,5 +406,3 @@ export function AdminEventTable({ events, loading, onActionSuccess }: AdminEvent
     </>
   );
 }
-
-    

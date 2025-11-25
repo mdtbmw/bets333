@@ -44,3 +44,4 @@ export const achievements: Achievement[] = [
     goal: (stats: UserStats | null) => (stats && stats.totalBets < 10) ? 10 : 75,
    }
 ];
+

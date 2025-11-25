@@ -85,5 +85,3 @@ export function AdminNav({ activeTab, onTabChange }: AdminNavProps) {
     </div>
   );
 }
-
-    
