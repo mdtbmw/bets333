@@ -25,22 +25,22 @@
     "baseUrl": ".",
     "paths": {
       "@/app/*": [
-        "./src/app/*"
+        "src/app/*"
       ],
       "@/components/*": [
-        "./src/components/*"
+        "src/components/*"
       ],
       "@/lib/*": [
-        "./src/lib/*"
+        "src/lib/*"
       ],
       "@/hooks/*": [
-        "./src/hooks/*"
+        "src/hooks/*"
       ],
       "@/services/*": [
-        "./src/services/*"
+        "src/services/*"
       ],
       "@/ai/*": [
-        "./src/ai/*"
+        "src/ai/*"
       ]
     }
   },
