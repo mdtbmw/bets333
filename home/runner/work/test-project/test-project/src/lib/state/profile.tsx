@@ -102,3 +102,5 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
     </ProfileContext.Provider>
   );
 };
+
+    

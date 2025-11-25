@@ -47,19 +47,31 @@ class IntuitionService {
       batch: { multicall: false } 
     });
 
-    try {
-        this.bettingContractAddress = getAddress(bettingAddressRaw || '0x0');
-    } catch {
-         console.warn(`WARN: The provided NEXT_PUBLIC_INTUITION_BETTING_ADDRESS "${bettingAddressRaw}" is not a valid Ethereum address. Using placeholder.`);
-         this.bettingContractAddress = '0x0000000000000000000000000000000000000000';
+    // --- Betting Contract Address Handling ---
+    let finalBettingAddress = '0x0000000000000000000000000000000000000000' as Address;
+    if (bettingAddressRaw) {
+        // Handle malformed "ADDRESS=0x..." string from previous script errors
+        const potentialAddress = bettingAddressRaw.includes('=') ? bettingAddressRaw.split('=')[1] : bettingAddressRaw;
+        try {
+            finalBettingAddress = getAddress(potentialAddress);
+        } catch {
+            console.warn(`WARN: The provided NEXT_PUBLIC_INTUITION_BETTING_ADDRESS "${bettingAddressRaw}" is not a valid Ethereum address. Using placeholder.`);
+        }
     }
+    this.bettingContractAddress = finalBettingAddress;
 
-    try {
-        this.profileContractAddress = getAddress(profileAddressRaw || '0x0');
-    } catch {
-         console.warn(`WARN: The provided NEXT_PUBLIC_USER_PROFILE_REGISTRY_ADDRESS "${profileAddressRaw}" is not a valid Ethereum address. Using placeholder.`);
-         this.profileContractAddress = '0x0000000000000000000000000000000000000000';
+    // --- Profile Contract Address Handling ---
+    let finalProfileAddress = '0x0000000000000000000000000000000000000000' as Address;
+    if (profileAddressRaw) {
+        // Handle malformed "ADDRESS=0x..." string
+        const potentialAddress = profileAddressRaw.includes('=') ? profileAddressRaw.split('=')[1] : profileAddressRaw;
+        try {
+            finalProfileAddress = getAddress(potentialAddress);
+        } catch {
+             console.warn(`WARN: The provided NEXT_PUBLIC_USER_PROFILE_REGISTRY_ADDRESS "${profileAddressRaw}" is not a valid Ethereum address. Using placeholder.`);
+        }
     }
+    this.profileContractAddress = finalProfileAddress;
   }
 
   private getBettingContractAddress(): Address {
@@ -560,3 +572,5 @@ class IntuitionService {
 }
 
 export const blockchainService = new IntuitionService();
+
+    
